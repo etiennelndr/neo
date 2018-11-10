@@ -1,5 +1,6 @@
 package com.etiennelndr.projetias.bot_pogamut;
 
+import com.etiennelndr.projetias.bot_pogamut.states.Idle;
 import com.etiennelndr.projetias.bot_pogamut.states.State;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -104,7 +105,7 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
         if (event.getKiller().equals(info.getId())) {
             ++frags;
             // Set isEnemyKilled from currentState to true
-            currentState.enemyKilled();
+            currentState.setEnemyKilled(true);
         }
         if (enemy == null) {
             return;
@@ -182,12 +183,15 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
         // DEFINE WEAPON PREFERENCES
         weaponPrefs.addGeneralPref(UT2004ItemType.LIGHTNING_GUN, true);                
         weaponPrefs.addGeneralPref(UT2004ItemType.SHOCK_RIFLE, true);
-        weaponPrefs.addGeneralPref(UT2004ItemType.MINIGUN, false);
+        weaponPrefs.addGeneralPref(UT2004ItemType.MINIGUN, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.FLAK_CANNON, true);        
         weaponPrefs.addGeneralPref(UT2004ItemType.ROCKET_LAUNCHER, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.LINK_GUN, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.ASSAULT_RIFLE, true);        
         weaponPrefs.addGeneralPref(UT2004ItemType.BIO_RIFLE, true);
+        
+        // Set the current state to Idle
+        currentState = State.resetState();
     }
 
     /**
@@ -210,6 +214,7 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
         enemy = null;
         navigation.stopNavigation();
         itemsToRunAround = null;
+        currentState = State.resetState();
     }
     
     @EventListener(eventClass=PlayerDamaged.class)

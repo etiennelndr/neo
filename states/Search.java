@@ -24,6 +24,13 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  * @author Etienne
  */
 public class Search extends State {
+    
+    /**
+     * Constructor for Search class
+     */
+    public Search() {
+        super();
+    }
 
     @Override
     public State transition(HunterBot bot) {

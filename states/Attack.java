@@ -26,7 +26,7 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
 public class Attack extends State {
     
     public Attack() {
-        this.isEnemyKilled = false;
+        super();
     }
 
     @Override

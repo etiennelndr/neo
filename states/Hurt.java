@@ -24,6 +24,13 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  * @author Etienne
  */
 public class Hurt extends State {
+    
+    /**
+     * Constructor for Hurt class
+     */
+    public Hurt() {
+        super();
+    }
 
     @Override
     public State transition(HunterBot bot) {

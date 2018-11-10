@@ -24,6 +24,13 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  * @author Etienne
  */
 public class Dead extends State {
+    
+    /**
+     * Constructor for Dead class
+     */
+    public Dead() {
+        super();
+    }
 
     @Override
     public State transition(HunterBot bot) {

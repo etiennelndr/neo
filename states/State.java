@@ -31,7 +31,22 @@ public abstract class State {
     public abstract State transition(HunterBot bot);
     public abstract void action(HunterBot bot);
     
-    public void enemyKilled() {
-        this.isEnemyKilled = true;
+    /**
+     * Constructor for State class
+     */
+    protected State() {
+        this.isEnemyKilled = false;
+    }
+    
+    public void setEnemyKilled(boolean val) {
+        this.isEnemyKilled = val;
+    }
+    
+    public boolean isEnemyKilled() {
+        return this.isEnemyKilled;
+    }
+    
+    public static State resetState() {
+        return new Idle();
     }
 }

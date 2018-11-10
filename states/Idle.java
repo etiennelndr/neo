@@ -24,6 +24,13 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  * @author Etienne
  */
 public class Idle extends State {
+    
+    /**
+     * Constructor for Idle class
+     */
+    public Idle() {
+        super();
+    }
 
     @Override
     public State transition(HunterBot bot) {
