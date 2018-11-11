@@ -18,6 +18,12 @@
 package com.etiennelndr.projetias.bot_pogamut.states;
 
 import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
+import cz.cuni.amis.utils.collections.MyCollections;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -34,12 +40,48 @@ public class Idle extends State {
 
     @Override
     public State transition(HunterBot bot) {
-        return new Attack();
+        if (bot.getPlayers().canSeeEnemies() && bot.getWeaponry().hasLoadedWeapon())
+            return new Attack();
+        
+        // Return this state
+        return this;
     }
 
     @Override
-    public void action(HunterBot bot) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void act(HunterBot bot) {
+        if (bot.getNavigation().isNavigatingToItem())
+            return;
+        
+        List<Item> interesting = new ArrayList<Item>();
+        
+        // ADD WEAPONS
+        for (ItemType itemType : ItemType.Category.WEAPON.getTypes()) {
+        	if (!bot.getWeaponry().hasLoadedWeapon(itemType)) interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
+        }
+        // ADD ARMORS
+        for (ItemType itemType : ItemType.Category.ARMOR.getTypes()) {
+        	interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
+        }
+        // ADD QUADS
+        interesting.addAll(bot.getItems().getSpawnedItems(UT2004ItemType.U_DAMAGE_PACK).values());
+        // ADD HEALTHS
+        if (bot.getInfo().getHealth() < 100) {
+        	interesting.addAll(bot.getItems().getSpawnedItems(UT2004ItemType.HEALTH_PACK).values());
+        }
+        
+        Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
+        if (item == null) {
+        	bot.getLog().warning("NO ITEM TO RUN FOR!");
+        	if (bot.getNavigation().isNavigating())
+                    return;
+        	bot.getBot().getBotName().setInfo("RANDOM NAV");
+        	bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());
+        } else {
+        	bot.setItem(item);
+        	bot.getLog().info("RUNNING FOR: " + item.getType().getName());
+        	bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
+        	bot.getNavigation().navigate(item);  	
+        }    
     }
     
 }

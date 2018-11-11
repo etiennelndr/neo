@@ -38,7 +38,7 @@ public class Hurt extends State {
     }
 
     @Override
-    public void action(HunterBot bot) {
+    public void act(HunterBot bot) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

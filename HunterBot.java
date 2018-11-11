@@ -15,6 +15,8 @@ import cz.cuni.amis.pogamut.base.utils.Pogamut;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.NavigationState;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathAutoFixer;
@@ -102,7 +104,7 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
      */
     @EventListener(eventClass = PlayerKilled.class)
     public void playerKilled(PlayerKilled event) {
-        if (event.getKiller().equals(info.getId())) {
+        if (info.getId().equals(event.getKiller())) {
             ++frags;
             // Set isEnemyKilled from currentState to true
             currentState.setEnemyKilled(true);
@@ -114,6 +116,7 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
             enemy = null;
         }
     }
+    
     /**
      * Used internally to maintain the information about the bot we're currently
      * hunting, i.e., should be firing at.
@@ -135,15 +138,61 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
     public void setEnemy(Player enemy) {
         this.enemy = enemy;
     }
+    
+    /**
+     * 
+     * @return Weaponry
+     */
+    public Weaponry getWeaponry() {
+        return this.weaponry;
+    }
+    
+    /**
+     * 
+     * @return Players
+     */
+    public Players getPlayers() {
+        return this.players;
+    }
+    
+    public void setPursueCount(int p) {
+        this.pursueCount = p;
+    }
 
     /**
      * Item we're running for. 
      */
     protected Item item = null;
+    
+    /**
+     * Set a new value to the item
+     * 
+     * @param i 
+     */
+    public void setItem(Item i) {
+        this.item = i;
+    }
+    
     /**
      * Taboo list of items that are forbidden for some time.
      */
     protected TabooSet<Item> tabooItems = null;
+
+    /**
+     * 
+     * @return TabooSet<Item>
+     */
+    public TabooSet<Item> getTabooItems() {
+        return tabooItems;
+    }
+    
+    /**
+     * 
+     * @param tabooItems 
+     */
+    public void setTabooItems(TabooSet<Item> tabooItems) {
+        this.tabooItems = tabooItems;
+    }
     
     private UT2004PathAutoFixer autoFixer;
     
@@ -237,7 +286,7 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
      * @throws cz.cuni.amis.pogamut.base.exceptions.PogamutException
      */
     @Override
-    public void logic() {	    	
+    public void logic() {    	
         // 1) do you see enemy? 	-> go to PURSUE (start shooting / hunt the enemy)
         if (shouldEngage && players.canSeeEnemies() && weaponry.hasLoadedWeapon()) {
             stateEngage();
@@ -269,12 +318,31 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
 
         // 6) if nothing ... run around items
         stateRunAroundItems();
+        /*
+        // Transition
+        currentState = currentState.transition(this);
+        
+        // Act
+        currentState.act(this);
+        */
     }
 
     //////////////////
     // STATE ENGAGE //
     //////////////////
     protected boolean runningToPlayer = false;
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public boolean isRunningToPlayer() {
+        return this.runningToPlayer;
+    }
+    
+    public void setRunningToPlayer(boolean r) {
+        this.runningToPlayer = r;
+    }
 
     /**
      * Fired when bot see any enemy. <ol> <li> if enemy that was attacked last
@@ -393,7 +461,8 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
     protected void stateRunAroundItems() {
         //log.info("Decision is: ITEMS");
         //config.setName("Hunter [ITEMS]");
-        if (navigation.isNavigatingToItem()) return;
+        if (navigation.isNavigatingToItem())
+            return;
         
         List<Item> interesting = new ArrayList<Item>();
         
@@ -415,14 +484,15 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
         Item item = MyCollections.getRandom(tabooItems.filter(interesting));
         if (item == null) {
         	log.warning("NO ITEM TO RUN FOR!");
-        	if (navigation.isNavigating()) return;
+        	if (navigation.isNavigating())
+                    return;
         	bot.getBotName().setInfo("RANDOM NAV");
         	navigation.navigate(navPoints.getRandomNavPoint());
         } else {
         	this.item = item;
         	log.info("RUNNING FOR: " + item.getType().getName());
         	bot.getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-        	navigation.navigate(item);        	
+        	navigation.navigate(item);  	
         }        
     }
 

@@ -25,11 +25,23 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  */
 public abstract class State {
     
-    protected boolean isEnemyKilled;
+    private boolean isEnemyKilled;
     
     // Abstract methods
+    /**
+     * Transit between different states
+     * 
+     * @param bot : a reference to the Hunter Bot
+     * @return State it can a be a new State or the same one
+     */
     public abstract State transition(HunterBot bot);
-    public abstract void action(HunterBot bot);
+    
+    /**
+     * Use this method so the bot can act
+     * 
+     * @param bot : a reference to the hunter bot
+     */
+    public abstract void act(HunterBot bot);
     
     /**
      * Constructor for State class
@@ -38,14 +50,30 @@ public abstract class State {
         this.isEnemyKilled = false;
     }
     
+    /**
+     * Use this method when an enemy has been killed by our bot.
+     * 
+     * @param val 
+     */
     public void setEnemyKilled(boolean val) {
         this.isEnemyKilled = val;
     }
     
+    /**
+     * Return a boolean that indicates if an enemy has been killed (true) 
+     * or not (false).
+     * 
+     * @return boolean
+     */
     public boolean isEnemyKilled() {
         return this.isEnemyKilled;
     }
     
+    /**
+     * Static method which return an Idle object.
+     * 
+     * @return @see com.etiennelndr.projetias.bot_pogamut.Idle
+     */
     public static State resetState() {
         return new Idle();
     }
