@@ -26,32 +26,54 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.StopShootin
  */
 public class Attack extends State {
     
+    private boolean shooting = false;
+    private double distance  = Double.MAX_VALUE;
+    
+    private boolean runningToPlayer = false;
+    
+    private final int MIN_HEALTH = 50;
+    
+    private final String TITLE = "ATTACK";
+    
     public Attack() {
         super();
     }
 
     @Override
     public State transition(HunterBot bot) {
+        // If the bot is dead we have to return a Dead object
+        if (bot.isDead())
+            return new Dead();
+        
         // If the bot.getEnemy() is killed
         if (this.isEnemyKilled())
-            // Bot have to walk and search for a new bot.getEnemy() to track
+            // Bot have to walk and search for a new enemy to track
             return new Idle();
         
-        // Reset isEnemyKilled attribute
-        this.setEnemyKilled(false);
+        // If someone/something is hurting us -> return a new Hurt object
+        if (bot.getSenses().isBeingDamaged() && bot.getInfo().getHealth() < MIN_HEALTH)
+            return new Hurt();
+        
+        // If our enemy is far or not visible - run to him
+        int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
+        if (bot.getEnemy() == null
+                || !bot.getEnemy().isVisible()
+                || !shooting
+                || decentDistance < distance)
+            return new Search();
+        
         // Return this state
         return this;
     }
 
     @Override
     public void act(HunterBot bot) {
-        boolean shooting = false;
-        double distance = Double.MAX_VALUE;
-        bot.setPursueCount(0);
-
-        // 1) pick new bot.getEnemy() if the old one has been lost
+        // Set the info to IDLE
+        bot.getBot().getBotName().setInfo(TITLE);
+        
+        // Pick a new enemy if the old one has been lost
         if (bot.getEnemy() == null || !bot.getEnemy().isVisible()) {
-            // pick new bot.getEnemy()
+            // Pick a new enemy
             bot.setEnemy(bot.getPlayers().getNearestVisiblePlayer(bot.getPlayers().getVisibleEnemies().values()));
             if (bot.getEnemy() == null) {
                 bot.getLog().info("Can't see any enemies... ???");
@@ -59,31 +81,31 @@ public class Attack extends State {
             }
         }
 
-        // 2) stop shooting if bot.getEnemy() is not visible
+        // Stop shooting if our enemy is not visible
         if (!bot.getEnemy().isVisible()) {
-	        if (bot.getInfo().isShooting() || bot.getInfo().isSecondaryShooting()) {
-                // stop shooting
+	    if (bot.getInfo().isShooting() || bot.getInfo().isSecondaryShooting()) {
+                // Stop shooting
                 bot.getAct().act(new StopShooting());
             }
-            bot.setRunningToPlayer(false);
+            runningToPlayer = false;
         } else {
-        	// 2) or shoot on bot.getEnemy() if it is visible
-	        distance = bot.getInfo().getLocation().getDistance(bot.getEnemy().getLocation());
-	        if (bot.getShoot().shoot(bot.getWeaponPrefs(), bot.getEnemy()) != null) {
-	            bot.getLog().info("Shooting at bot.getEnemy()!!!");
-	            shooting = true;
-	        }
+            // Or shoot on enemy if it is visible
+            distance = bot.getInfo().getLocation().getDistance(bot.getEnemy().getLocation());
+            if (bot.getShoot().shoot(bot.getWeaponPrefs(), bot.getEnemy()) != null) {
+                bot.getLog().info("Shooting at bot.getEnemy()!!!");
+                shooting = true;
+            }
         }
-
-        // 3) if bot.getEnemy() is far or not visible - run to him
+        
+        // If our enemy is too far and visible -> run to him
         int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
-        if (!bot.getEnemy().isVisible() || !shooting || decentDistance < distance) {
-            if (!bot.isRunningToPlayer()) {
+        if (decentDistance < distance && bot.getEnemy().isVisible()) {
+            if (!runningToPlayer) {
                 bot.getNavigation().navigate(bot.getEnemy());
-                bot.setRunningToPlayer(true);
+                runningToPlayer = true;
             }
         } else {
-            bot.setRunningToPlayer(false);
+            runningToPlayer = false;
             bot.getNavigation().stopNavigation();
         }
         

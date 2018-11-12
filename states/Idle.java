@@ -31,6 +31,8 @@ import java.util.List;
  */
 public class Idle extends State {
     
+    private final String TITLE = "IDLE";
+    
     /**
      * Constructor for Idle class
      */
@@ -40,6 +42,11 @@ public class Idle extends State {
 
     @Override
     public State transition(HunterBot bot) {
+        // If the bot is dead we have to return a Dead object
+        if (bot.isDead())
+            return new Dead();
+        
+        // If we see an enemy and we have a loaded weapon -> return an Attack object
         if (bot.getPlayers().canSeeEnemies() && bot.getWeaponry().hasLoadedWeapon())
             return new Attack();
         
@@ -49,6 +56,9 @@ public class Idle extends State {
 
     @Override
     public void act(HunterBot bot) {
+        // Set the info to IDLE
+        bot.getBot().getBotName().setInfo(TITLE);
+        
         if (bot.getNavigation().isNavigatingToItem())
             return;
         
@@ -56,32 +66,31 @@ public class Idle extends State {
         
         // ADD WEAPONS
         for (ItemType itemType : ItemType.Category.WEAPON.getTypes()) {
-        	if (!bot.getWeaponry().hasLoadedWeapon(itemType)) interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
+            if (!bot.getWeaponry().hasLoadedWeapon(itemType)) interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
         }
         // ADD ARMORS
         for (ItemType itemType : ItemType.Category.ARMOR.getTypes()) {
-        	interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
+            interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
         }
         // ADD QUADS
         interesting.addAll(bot.getItems().getSpawnedItems(UT2004ItemType.U_DAMAGE_PACK).values());
         // ADD HEALTHS
         if (bot.getInfo().getHealth() < 100) {
-        	interesting.addAll(bot.getItems().getSpawnedItems(UT2004ItemType.HEALTH_PACK).values());
+            interesting.addAll(bot.getItems().getSpawnedItems(UT2004ItemType.HEALTH_PACK).values());
         }
         
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
-        	bot.getLog().warning("NO ITEM TO RUN FOR!");
-        	if (bot.getNavigation().isNavigating())
-                    return;
-        	bot.getBot().getBotName().setInfo("RANDOM NAV");
-        	bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());
+            bot.getLog().warning("NO ITEM TO RUN FOR!");
+            if (bot.getNavigation().isNavigating())
+                return;
+            bot.getBot().getBotName().setInfo("RANDOM NAV");
+            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());
         } else {
-        	bot.setItem(item);
-        	bot.getLog().info("RUNNING FOR: " + item.getType().getName());
-        	bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-        	bot.getNavigation().navigate(item);  	
+            bot.setItem(item);
+            bot.getLog().info("RUNNING FOR: " + item.getType().getName());
+            bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
+            bot.getNavigation().navigate(item);  	
         }    
     }
-    
 }

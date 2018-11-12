@@ -18,12 +18,18 @@
 package com.etiennelndr.projetias.bot_pogamut.states;
 
 import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 
 /**
  *
  * @author Etienne
  */
 public class Hurt extends State {
+    
+    Item item;
+    
+    private final String TITLE = "HURT";
     
     /**
      * Constructor for Hurt class
@@ -34,12 +40,27 @@ public class Hurt extends State {
 
     @Override
     public State transition(HunterBot bot) {
+        // If the bot is dead we have to return a Dead object
+        if (bot.isDead())
+            return new Dead();
+        
+        item = bot.getItems().getPathNearestSpawnedItem(ItemType.Category.HEALTH);
+        if (item == null) {
+            bot.getLog().warning("NO HEALTH ITEM TO RUN TO => ITEMS");
+            // Return a new Attack object
+            return new Attack();
+        }
+        
         return new Attack();
     }
 
     @Override
     public void act(HunterBot bot) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Set the info to HURT
+        bot.getBot().getBotName().setInfo(TITLE);
+        
+        bot.getBot().getBotName().setInfo("MEDKIT");
+        bot.getNavigation().navigate(item);
+        bot.setItem(item);
     }
-    
 }

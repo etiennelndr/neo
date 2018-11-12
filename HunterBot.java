@@ -58,6 +58,27 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
      * Current state of our bot
      */
     State currentState;
+    
+    /**
+     * True if the bot is dead, otherwise false
+     */
+    private boolean dead;
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public boolean isDead() {
+        return dead;
+    }
+
+    /**
+     * 
+     * @param dead 
+     */
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
 
     /**
      * boolean switch to activate engage behavior
@@ -241,6 +262,9 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
         
         // Set the current state to Idle
         currentState = State.resetState();
+        
+        // Set the parameter dead to false
+        this.dead = false;
     }
 
     /**
@@ -258,12 +282,12 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
     /**
      * Resets the state of the Hunter.
      */
-    protected void reset() {
-    	item = null;
+    public void reset() {
+    	item  = null;
         enemy = null;
         navigation.stopNavigation();
         itemsToRunAround = null;
-        currentState = State.resetState();
+        currentState     = State.resetState();
     }
     
     @EventListener(eventClass=PlayerDamaged.class)
@@ -286,7 +310,8 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
      * @throws cz.cuni.amis.pogamut.base.exceptions.PogamutException
      */
     @Override
-    public void logic() {    	
+    public void logic() {
+        /*
         // 1) do you see enemy? 	-> go to PURSUE (start shooting / hunt the enemy)
         if (shouldEngage && players.canSeeEnemies() && weaponry.hasLoadedWeapon()) {
             stateEngage();
@@ -318,13 +343,12 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
 
         // 6) if nothing ... run around items
         stateRunAroundItems();
-        /*
+        */
         // Transition
         currentState = currentState.transition(this);
         
         // Act
         currentState.act(this);
-        */
     }
 
     //////////////////
@@ -370,18 +394,18 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
 
         // 2) stop shooting if enemy is not visible
         if (!enemy.isVisible()) {
-	        if (info.isShooting() || info.isSecondaryShooting()) {
+	    if (info.isShooting() || info.isSecondaryShooting()) {
                 // stop shooting
                 getAct().act(new StopShooting());
             }
             runningToPlayer = false;
         } else {
-        	// 2) or shoot on enemy if it is visible
-	        distance = info.getLocation().getDistance(enemy.getLocation());
-	        if (shoot.shoot(weaponPrefs, enemy) != null) {
-	            log.info("Shooting at enemy!!!");
-	            shooting = true;
-	        }
+            // 2) or shoot on enemy if it is visible
+	    distance = info.getLocation().getDistance(enemy.getLocation());
+	    if (shoot.shoot(weaponPrefs, enemy) != null) {
+                log.info("Shooting at enemy!!!");
+	        shooting = true;
+	    }
         }
 
         // 3) if enemy is far or not visible - run to him
@@ -501,7 +525,8 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
     ////////////////
     @Override
     public void botKilled(BotKilled event) {
-    	reset();
+        this.dead = true;
+    	//reset();
     }
 
     ///////////////////////////////////

@@ -25,6 +25,8 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  */
 public class Dead extends State {
     
+    private final String TITLE = "DEAD";
+    
     /**
      * Constructor for Dead class
      */
@@ -34,12 +36,22 @@ public class Dead extends State {
 
     @Override
     public State transition(HunterBot bot) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!bot.isDead())
+            return new Idle();
+        
+        // Return this state
+        return this;
     }
 
     @Override
     public void act(HunterBot bot) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Set the info to DEAD
+        bot.getBot().getBotName().setInfo(TITLE);
+        
+        // Reset some of the bot attributes
+        bot.reset();
+        
+        // Set the dead value to false
+        bot.setDead(false);
     }
-    
 }
