@@ -31,7 +31,7 @@ public class Attack extends State {
     
     private boolean runningToPlayer = false;
     
-    private final int MIN_HEALTH = 50;
+    private final int MIN_HEALTH = 25;
     
     public Attack() {
         // Change the title to ATTACK
