@@ -50,7 +50,7 @@ public class Hurt extends State {
             return new Attack();
         }
         
-        return new Attack();
+        return this;
     }
 
     @Override
@@ -58,7 +58,6 @@ public class Hurt extends State {
         // Set the info to HURT
         bot.getBot().getBotName().setInfo(TITLE);
         
-        bot.getBot().getBotName().setInfo("MEDKIT");
         bot.getNavigation().navigate(item);
         bot.setItem(item);
     }
