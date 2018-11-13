@@ -53,7 +53,7 @@ public class Attack extends State {
             return new Hurt();
         
         // If our enemy is far or not visible - run to him
-        int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
+        int decentDistance = Math.round(bot.getRandom().nextFloat() * 600) + 400;
         if (!bot.getEnemy().isVisible()
                 || !shooting
                 || decentDistance < distance)
