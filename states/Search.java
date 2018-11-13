@@ -18,6 +18,7 @@
 package com.etiennelndr.projetias.bot_pogamut.states;
 
 import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.StopShooting;
 
 /**
  *
@@ -29,14 +30,14 @@ public class Search extends State {
     
     private final int MAX_PURSUE_COUNT = 30;
     
-    private final String TITLE = "SEARCH";
-    
     /**
      * Constructor for Search class
      */
     public Search() {
-        super();
+        // Change the title to SEARCH
+        super("SEARCH");
         
+        // Set pursueCount to 0
         this.pursueCount = 0;
     }
 
@@ -46,12 +47,21 @@ public class Search extends State {
         if (bot.isDead())
             return new Dead();
         
-        if (this.pursueCount > MAX_PURSUE_COUNT || bot.getEnemy() ==  null) {
+        if (this.pursueCount > MAX_PURSUE_COUNT 
+                || bot.getEnemy() ==  null
+                || this.isEnemyKilled()) {
             // Reset some of the bot attributes
             bot.reset();
+            
             // Return a new Idle object
             return new Idle();
         }
+        
+        // If our enemy is not too far
+        int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
+        double distance = bot.getInfo().getLocation().getDistance(bot.getEnemy().getLocation());
+        if (bot.getEnemy().isVisible() && distance < decentDistance)
+            return new Attack();
         
         // Return this state
         return this;
@@ -59,6 +69,12 @@ public class Search extends State {
 
     @Override
     public void act(HunterBot bot) {
+        // If we're currently shooting
+        if (bot.getInfo().isShooting() || bot.getInfo().isSecondaryShooting()) {
+            // Stop shooting
+            bot.getAct().act(new StopShooting());
+        }
+        
         //log.info("Decision is: PURSUE");
         ++this.pursueCount;
         

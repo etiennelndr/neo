@@ -23,15 +23,13 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  *
  * @author Etienne
  */
-public class Dead extends State {
-    
-    private final String TITLE = "DEAD";
-    
+public class Dead extends State {    
     /**
      * Constructor for Dead class
      */
     public Dead() {
-        super();
+        // Change the title to DEAD
+        super("DEAD");
     }
 
     @Override

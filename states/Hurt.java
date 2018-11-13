@@ -29,13 +29,12 @@ public class Hurt extends State {
     
     Item item;
     
-    private final String TITLE = "HURT";
-    
     /**
      * Constructor for Hurt class
      */
     public Hurt() {
-        super();
+        // Change the title to HURT
+        super("HURT");
     }
 
     @Override

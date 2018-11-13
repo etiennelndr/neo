@@ -33,10 +33,9 @@ public class Attack extends State {
     
     private final int MIN_HEALTH = 50;
     
-    private final String TITLE = "ATTACK";
-    
     public Attack() {
-        super();
+        // Change the title to ATTACK
+        super("ATTACK");
     }
 
     @Override
@@ -46,9 +45,8 @@ public class Attack extends State {
             return new Dead();
         
         // If the bot.getEnemy() is killed
-        if (this.isEnemyKilled())
-            // Bot have to walk and search for a new enemy to track
-            return new Idle();
+        if (this.isEnemyKilled() || bot.getEnemy() == null)
+            return new Idle(); // Bot have to walk and search for a new enemy to track
         
         // If someone/something is hurting us -> return a new Hurt object
         if (bot.getSenses().isBeingDamaged() && bot.getInfo().getHealth() < MIN_HEALTH)
@@ -56,8 +54,7 @@ public class Attack extends State {
         
         // If our enemy is far or not visible - run to him
         int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
-        if (bot.getEnemy() == null
-                || !bot.getEnemy().isVisible()
+        if (!bot.getEnemy().isVisible()
                 || !shooting
                 || decentDistance < distance)
             return new Search();
@@ -68,6 +65,8 @@ public class Attack extends State {
 
     @Override
     public void act(HunterBot bot) {
+        this.shooting = false;
+        
         // Set the info to IDLE
         bot.getBot().getBotName().setInfo(TITLE);
         
@@ -87,25 +86,25 @@ public class Attack extends State {
                 // Stop shooting
                 bot.getAct().act(new StopShooting());
             }
-            runningToPlayer = false;
+            this.runningToPlayer = false;
         } else {
             // Or shoot on enemy if it is visible
             distance = bot.getInfo().getLocation().getDistance(bot.getEnemy().getLocation());
             if (bot.getShoot().shoot(bot.getWeaponPrefs(), bot.getEnemy()) != null) {
                 bot.getLog().info("Shooting at bot.getEnemy()!!!");
-                shooting = true;
+                this.shooting = true;
             }
         }
         
         // If our enemy is too far and visible -> run to him
         int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
         if (decentDistance < distance && bot.getEnemy().isVisible()) {
-            if (!runningToPlayer) {
+            if (!this.runningToPlayer) {
                 bot.getNavigation().navigate(bot.getEnemy());
-                runningToPlayer = true;
+                this.runningToPlayer = true;
             }
         } else {
-            runningToPlayer = false;
+            this.runningToPlayer = false;
             bot.getNavigation().stopNavigation();
         }
         

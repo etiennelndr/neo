@@ -25,6 +25,8 @@ import com.etiennelndr.projetias.bot_pogamut.HunterBot;
  */
 public abstract class State {
     
+    public final String TITLE;
+    
     private boolean isEnemyKilled;
     
     // Abstract methods
@@ -45,8 +47,12 @@ public abstract class State {
     
     /**
      * Constructor for State class
+     * 
+     * @param title 
      */
-    protected State() {
+    protected State(String title) {
+        this.TITLE = title;
+        
         this.isEnemyKilled = false;
     }
     

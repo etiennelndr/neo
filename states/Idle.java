@@ -30,14 +30,12 @@ import java.util.List;
  * @author Etienne
  */
 public class Idle extends State {
-    
-    private final String TITLE = "IDLE";
-    
     /**
      * Constructor for Idle class
      */
     public Idle() {
-        super();
+        // Change the title to IDLE
+        super("IDLE");
     }
 
     @Override
