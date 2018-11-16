@@ -94,6 +94,7 @@ public class Database {
             preparedStmt.execute();
         } catch(SQLException e) {
             System.out.println("ERROR : " + e.getMessage());
+            System.exit(-1);
         }
         
         // Unlock the code

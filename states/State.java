@@ -29,6 +29,8 @@ public abstract class State {
     
     private boolean isEnemyKilled;
     
+    public static int i;
+    
     // Abstract methods
     /**
      * Transit between different states
@@ -54,6 +56,8 @@ public abstract class State {
         this.TITLE = title;
         
         this.isEnemyKilled = false;
+        
+        State.i = 0;
     }
     
     /**
@@ -82,5 +86,15 @@ public abstract class State {
      */
     public static State resetState() {
         return new Idle();
+    }
+    
+    /**
+     * 
+     * @param bot 
+     */
+    public void insertStateValuesIntoDatabase(BotProjetIAS bot) {
+        if (i%100 == 0) {
+            BotProjetIAS.getDb().insertInDatabase(bot);
+        }
     }
 }

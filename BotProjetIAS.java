@@ -54,7 +54,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     /**
      * Database to store each states
      */
-    static Database db;
+    public static Database db;
+
+    /**
+     * 
+     * @return BotProjetIAS
+     */
+    public static Database getDb() {
+        return BotProjetIAS.db;
+    }
     
     /**
      * True if the bot is dead, otherwise false
@@ -307,6 +315,9 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         // Act
         currentState.act(this);
+        
+        // Store values into database
+        currentState.insertStateValuesIntoDatabase(this);
     }
 
     ///////////////
