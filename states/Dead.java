@@ -17,7 +17,7 @@
 
 package com.etiennelndr.projetias.bot_pogamut.states;
 
-import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 
 /**
  *
@@ -33,7 +33,7 @@ public class Dead extends State {
     }
 
     @Override
-    public State transition(HunterBot bot) {
+    public State transition(BotProjetIAS bot) {
         if (!bot.isDead())
             return new Idle();
         
@@ -42,7 +42,7 @@ public class Dead extends State {
     }
 
     @Override
-    public void act(HunterBot bot) {
+    public void act(BotProjetIAS bot) {
         // Set the info to DEAD
         bot.getBot().getBotName().setInfo(TITLE);
         

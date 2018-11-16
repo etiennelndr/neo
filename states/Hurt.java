@@ -17,7 +17,7 @@
 
 package com.etiennelndr.projetias.bot_pogamut.states;
 
-import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 
@@ -38,7 +38,7 @@ public class Hurt extends State {
     }
 
     @Override
-    public State transition(HunterBot bot) {
+    public State transition(BotProjetIAS bot) {
         // If the bot is dead we have to return a Dead object
         if (bot.isDead())
             return new Dead();
@@ -54,7 +54,7 @@ public class Hurt extends State {
     }
 
     @Override
-    public void act(HunterBot bot) {
+    public void act(BotProjetIAS bot) {
         // Set the info to HURT
         bot.getBot().getBotName().setInfo(TITLE);
         

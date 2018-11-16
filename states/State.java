@@ -17,7 +17,7 @@
 
 package com.etiennelndr.projetias.bot_pogamut.states;
 
-import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 
 /**
  *
@@ -36,14 +36,14 @@ public abstract class State {
      * @param bot : a reference to the Hunter Bot
      * @return State it can a be a new State or the same one
      */
-    public abstract State transition(HunterBot bot);
+    public abstract State transition(BotProjetIAS bot);
     
     /**
      * Use this method so the bot can act
      * 
      * @param bot : a reference to the hunter bot
      */
-    public abstract void act(HunterBot bot);
+    public abstract void act(BotProjetIAS bot);
     
     /**
      * Constructor for State class

@@ -1,5 +1,6 @@
 package com.etiennelndr.projetias.bot_pogamut;
 
+import com.etiennelndr.projetias.bot_pogamut.database.Database;
 import com.etiennelndr.projetias.bot_pogamut.states.State;
 
 import java.util.List;
@@ -29,19 +30,31 @@ import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
 
 /**
- * Example of Simple Pogamut bot, that randomly walks around the map searching
- * for preys shooting at everything that is in its way.
- *
- * @author Rudolf Kadlec aka ik
- * @author Jimmy
+ * 
+ * @author Etienne (elandure@gmail.com)
+ * @author Matthieu
  */
 @AgentScoped
-public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
+public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     
     /**
      * Current state of our bot
      */
     State currentState;
+    
+    /**
+     * Return an instance of the current state
+     * 
+     * @return State
+     */
+    public State getCurrentState() {
+        return this.currentState;
+    }
+    
+    /**
+     * Database to store each states
+     */
+    static Database db;
     
     /**
      * True if the bot is dead, otherwise false
@@ -325,8 +338,13 @@ public class HunterBot extends UT2004BotModuleController<UT2004Bot> {
 
     ///////////////////////////////////
     public static void main(String args[]) throws PogamutException {
+        // Open the connection with the database
+        BotProjetIAS.db = new Database();
+        // Reset the database
+        BotProjetIAS.db.resetDatabase();
+        
         // starts 3 Hunters at once
         // note that this is the most easy way to get a bunch of (the same) bots running at the same time        
-    	new UT2004BotRunner(HunterBot.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
+    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
     }
 }

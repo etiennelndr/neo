@@ -17,7 +17,7 @@
 
 package com.etiennelndr.projetias.bot_pogamut.states;
 
-import com.etiennelndr.projetias.bot_pogamut.HunterBot;
+import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.StopShooting;
 
 /**
@@ -42,7 +42,7 @@ public class Search extends State {
     }
 
     @Override
-    public State transition(HunterBot bot) {
+    public State transition(BotProjetIAS bot) {
         // If the bot is dead we have to return a Dead object
         if (bot.isDead())
             return new Dead();
@@ -68,7 +68,7 @@ public class Search extends State {
     }
 
     @Override
-    public void act(HunterBot bot) {
+    public void act(BotProjetIAS bot) {
         // If we're currently shooting
         if (bot.getInfo().isShooting() || bot.getInfo().isSecondaryShooting()) {
             // Stop shooting
