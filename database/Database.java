@@ -27,6 +27,8 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -43,7 +45,8 @@ public class Database {
     
     private Connection con;
     
-    private final static String QUERY_RESET = "DELETE FROM " + TABLE;
+    private final static String QUERY_RESET                = "DELETE FROM " + TABLE;
+    private final static String QUERY_RESET_AUTO_INCREMENT = "ALTER TABLE " + TABLE +" AUTO_INCREMENT=0";
     
     public Database() {
         try {
@@ -56,14 +59,21 @@ public class Database {
         locker = new ReentrantLock();
     }
     
+    @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void resetDatabase() {
         // Lock the code
         locker.lock();
         
         try {
-             Statement stmt = this.con.createStatement();
+            // Create a new statement 
+            Statement stmt = this.con.createStatement();
+            
+            // Execute a new query with the previous statement
+            stmt.execute(QUERY_RESET);
+            stmt.execute(QUERY_RESET_AUTO_INCREMENT);
              
-             boolean rset = stmt.execute(QUERY_RESET);
+            // Close the statement
+            stmt.close();
         } catch(SQLException e) {
             System.out.println("ERROR : " + e.getMessage());
             System.exit(-1);
@@ -74,24 +84,37 @@ public class Database {
     }
     
     
+    @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void insertInDatabase(BotProjetIAS bot) {
         // Lock the code
         locker.lock();
         
-        String query = "INSERT INTO " + TABLE + " (state, life, date) VALUES (?, ?, ?)";
+        // Create a query to insert datas in a new row of the bot_state table
+        String query = "INSERT INTO " + TABLE + " (state, life, id_bot, date) VALUES (?, ?, ?, NOW())";
         
         try {
+            // Create a new statement
             PreparedStatement preparedStmt = this.con.prepareStatement(query);
             
-            preparedStmt.setString(1, bot.getCurrentState().TITLE);
+            // Insert data values
+            // State
+            preparedStmt.setString(1, bot.getCurrentState().STATE);
+            // Life
             preparedStmt.setInt(2, bot.getInfo().getHealth());
-            
+            // Id of the bot
+            preparedStmt.setInt(3, bot.getIdBot());
+            // Current date
             Calendar calendar = Calendar.getInstance();
             java.sql.Date date = new java.sql.Date(calendar.getTime().getTime());
-            preparedStmt.setDate(3, date);
+            preparedStmt.setDate(4, date);
+            
+            bot.getEnemy();
             
             // Execute the statement
             preparedStmt.execute();
+            
+            // Close the statement
+            preparedStmt.close();
         } catch(SQLException e) {
             System.out.println("ERROR : " + e.getMessage());
             System.exit(-1);

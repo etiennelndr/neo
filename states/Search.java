@@ -69,6 +69,9 @@ public class Search extends State {
 
     @Override
     public void act(BotProjetIAS bot) {
+        // Set the info to PURSUE
+        bot.getBot().getBotName().setInfo(STATE);
+        
         // If we're currently shooting
         if (bot.getInfo().isShooting() || bot.getInfo().isSecondaryShooting()) {
             // Stop shooting
@@ -78,8 +81,6 @@ public class Search extends State {
         //log.info("Decision is: PURSUE");
         ++this.pursueCount;
         
-        // Set the info to PURSUE
-        bot.getBot().getBotName().setInfo(TITLE);
         // Navigate to enemy
         bot.getNavigation().navigate(bot.getEnemy());
         // Set item to null

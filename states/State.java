@@ -25,11 +25,11 @@ import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
  */
 public abstract class State {
     
-    public final String TITLE;
+    public final String STATE;
     
     private boolean isEnemyKilled;
     
-    public static int i;
+    private int i;
     
     // Abstract methods
     /**
@@ -50,14 +50,14 @@ public abstract class State {
     /**
      * Constructor for State class
      * 
-     * @param title 
+     * @param state 
      */
-    protected State(String title) {
-        this.TITLE = title;
+    protected State(String state) {
+        this.STATE = state;
         
         this.isEnemyKilled = false;
         
-        State.i = 0;
+        this.i = 0;
     }
     
     /**
@@ -93,7 +93,7 @@ public abstract class State {
      * @param bot 
      */
     public void insertStateValuesIntoDatabase(BotProjetIAS bot) {
-        if (i%100 == 0) {
+        if (this.i%100 == 0) {
             BotProjetIAS.getDb().insertInDatabase(bot);
         }
     }

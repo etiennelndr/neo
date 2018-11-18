@@ -219,10 +219,43 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     private UT2004PathAutoFixer autoFixer;
     
     private static int instanceCount = 0;
+    
+    private int idBot;
+    
+    /**
+     * Return the value of idBot attribute
+     * 
+     * @return int
+     */
+    public int getIdBot() {
+        return this.idBot;
+    }
+    
+    private boolean beingDamaged;
+
+    /**
+     * Return the value of the attribute begingDamaged
+     * 
+     * @return boolean
+     */
+    public boolean isBeingDamaged() {
+        return beingDamaged;
+    }
+
+    /**
+     * Set a new value to the attribute begingDamaged
+     * 
+     * @param beingDamaged 
+     */
+    public void setBeingDamaged(boolean beingDamaged) {
+        this.beingDamaged = beingDamaged;
+    }
 
     /**
      * Bot's preparation - called before the bot is connected to GB2004 and
      * launched into UT2004.
+     * 
+     * @param bot
      */
     @Override
     public void prepareBot(UT2004Bot bot) {
@@ -266,6 +299,9 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         // Set the parameter dead to false
         this.dead = false;
+        
+        // Set beingDamaged to false
+        this.beingDamaged = false;
     }
 
     /**
@@ -275,9 +311,12 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      */
     @Override
     public Initialize getInitializeCommand() {
-        // just set the name of the bot and his skill level, 1 is the lowest, 7 is the highest
+        // Just set the name of the bot and his skill level, 1 is the lowest, 7 is the highest
     	// skill level affects how well will the bot aim
-        return new Initialize().setName("Hunter-" + (++instanceCount)).setDesiredSkill(5);
+        // First of all, init the value of the idBot
+        this.idBot = ++instanceCount;
+        
+        return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5);
     }
 
     /**
@@ -293,11 +332,13 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     
     @EventListener(eventClass=PlayerDamaged.class)
     public void playerDamaged(PlayerDamaged event) {
+        //event.
     	log.info("I have just hurt other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
     
     @EventListener(eventClass=BotDamaged.class)
     public void botDamaged(BotDamaged event) {
+        this.beingDamaged = true;
     	log.info("I have just been hurt by other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
 
@@ -344,7 +385,6 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     @Override
     public void botKilled(BotKilled event) {
         this.dead = true;
-    	//reset();
     }
 
     ///////////////////////////////////

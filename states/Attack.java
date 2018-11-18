@@ -49,8 +49,12 @@ public class Attack extends State {
             return new Idle(); // Bot have to walk and search for a new enemy to track
         
         // If someone/something is hurting us -> return a new Hurt object
-        if (bot.getSenses().isBeingDamaged() && bot.getInfo().getHealth() < MIN_HEALTH)
+        if ((bot.isBeingDamaged() || bot.getSenses().isBeingDamaged()) && bot.getInfo().getHealth() < MIN_HEALTH) {
+            // TODO : add  a comment
+            bot.setBeingDamaged(false);
+            
             return new Hurt();
+        }
         
         // If our enemy is far or not visible - run to him
         int decentDistance = Math.round(bot.getRandom().nextFloat() * 600) + 400;
@@ -68,7 +72,7 @@ public class Attack extends State {
         this.shooting = false;
         
         // Set the info to IDLE
-        bot.getBot().getBotName().setInfo(TITLE);
+        bot.getBot().getBotName().setInfo(STATE);
         
         // Pick a new enemy if the old one has been lost
         if (bot.getEnemy() == null || !bot.getEnemy().isVisible()) {

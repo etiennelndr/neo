@@ -56,7 +56,7 @@ public class Hurt extends State {
     @Override
     public void act(BotProjetIAS bot) {
         // Set the info to HURT
-        bot.getBot().getBotName().setInfo(TITLE);
+        bot.getBot().getBotName().setInfo(STATE);
         
         bot.getNavigation().navigate(item);
         bot.setItem(item);
