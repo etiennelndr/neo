@@ -44,7 +44,7 @@ public class Dead extends State {
     @Override
     public void act(BotProjetIAS bot) {
         // Set the info to DEAD
-        bot.getBot().getBotName().setInfo(STATE);
+        changeStateName(bot);
         
         // Reset some of the bot attributes
         bot.reset();

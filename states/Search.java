@@ -70,7 +70,7 @@ public class Search extends State {
     @Override
     public void act(BotProjetIAS bot) {
         // Set the info to PURSUE
-        bot.getBot().getBotName().setInfo(STATE);
+        changeStateName(bot);
         
         // If we're currently shooting
         if (bot.getInfo().isShooting() || bot.getInfo().isSecondaryShooting()) {

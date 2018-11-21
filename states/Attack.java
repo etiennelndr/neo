@@ -72,7 +72,7 @@ public class Attack extends State {
         this.shooting = false;
         
         // Set the info to IDLE
-        bot.getBot().getBotName().setInfo(STATE);
+        changeStateName(bot);
         
         // Pick a new enemy if the old one has been lost
         if (bot.getEnemy() == null || !bot.getEnemy().isVisible()) {

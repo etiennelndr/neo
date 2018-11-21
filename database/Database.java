@@ -18,17 +18,15 @@
 package com.etiennelndr.projetias.bot_pogamut.database;
 
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
+import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS.BotDatas;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Calendar;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -90,25 +88,40 @@ public class Database {
         locker.lock();
         
         // Create a query to insert datas in a new row of the bot_state table
-        String query = "INSERT INTO " + TABLE + " (state, life, id_bot, date) VALUES (?, ?, ?, NOW())";
+        String query;
+        if (bot.getEnemy() == null)
+            query = "INSERT INTO " + TABLE + " (state, life, id_bot, date) VALUES (?, ?, ?, ?)";
+        else 
+            query = "INSERT INTO " + TABLE + " (state, life, id_bot, id_enemy, enemy_life, date) VALUES (?, ?, ?, ?, ?, ?)";
         
         try {
             // Create a new statement
             PreparedStatement preparedStmt = this.con.prepareStatement(query);
             
+            int stmtIndex = 0;
+            
             // Insert data values
             // State
-            preparedStmt.setString(1, bot.getCurrentState().STATE);
+            preparedStmt.setString(++stmtIndex, bot.getCurrentState().STATE);
             // Life
-            preparedStmt.setInt(2, bot.getInfo().getHealth());
+            preparedStmt.setInt(++stmtIndex, bot.getInfo().getHealth());
             // Id of the bot
-            preparedStmt.setInt(3, bot.getIdBot());
+            preparedStmt.setInt(++stmtIndex, bot.getIdBot());
+            
+            if (bot.getEnemy() != null) {
+                BotProjetIAS enemyBot = BotDatas.bots.get(bot.getEnemy().getName().split(" ")[0]);
+                
+                // Id enemy
+                preparedStmt.setInt(++stmtIndex, enemyBot.getIdBot());
+
+                // Enemy life
+                preparedStmt.setInt(++stmtIndex, enemyBot.getInfo().getHealth());
+            }
+            
             // Current date
             Calendar calendar = Calendar.getInstance();
             java.sql.Date date = new java.sql.Date(calendar.getTime().getTime());
-            preparedStmt.setDate(4, date);
-            
-            bot.getEnemy();
+            preparedStmt.setDate(++stmtIndex, date);
             
             // Execute the statement
             preparedStmt.execute();

@@ -28,6 +28,8 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerK
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -316,6 +318,9 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // First of all, init the value of the idBot
         this.idBot = ++instanceCount;
         
+        // Insert a new key/value in the bots map
+        BotDatas.bots.put("Hunter-" + String.valueOf(this.idBot), this);
+        
         return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5);
     }
 
@@ -332,7 +337,6 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     
     @EventListener(eventClass=PlayerDamaged.class)
     public void playerDamaged(PlayerDamaged event) {
-        //event.
     	log.info("I have just hurt other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
     
@@ -359,6 +363,9 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         // Store values into database
         currentState.insertStateValuesIntoDatabase(this);
+        
+        // Update map
+        BotDatas.bots.replace(this.getName().toString(), this);
     }
 
     ///////////////
@@ -394,8 +401,16 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Reset the database
         BotProjetIAS.db.resetDatabase();
         
+        BotDatas.bots = new HashMap<String, BotProjetIAS>();
+        
         // starts 3 Hunters at once
         // note that this is the most easy way to get a bunch of (the same) bots running at the same time        
     	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
+    }
+    
+    // Static class to access private datas of each bot
+    public static class BotDatas {
+        // Static map
+        public static Map<String, BotProjetIAS> bots;
     }
 }

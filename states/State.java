@@ -97,4 +97,12 @@ public abstract class State {
             BotProjetIAS.getDb().insertInDatabase(bot);
         }
     }
+    
+    /**
+     * 
+     * @param bot 
+     */
+    protected void changeStateName(BotProjetIAS bot) {
+        //bot.getBot().getBotName().setInfo(STATE);
+    }
 }

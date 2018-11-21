@@ -55,7 +55,7 @@ public class Idle extends State {
     @Override
     public void act(BotProjetIAS bot) {
         // Set the info to IDLE
-        bot.getBot().getBotName().setInfo(STATE);
+        changeStateName(bot);
         
         if (bot.getNavigation().isNavigatingToItem())
             return;

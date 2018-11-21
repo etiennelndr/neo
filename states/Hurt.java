@@ -43,20 +43,21 @@ public class Hurt extends State {
         if (bot.isDead())
             return new Dead();
         
-        item = bot.getItems().getPathNearestSpawnedItem(ItemType.Category.HEALTH);
+        this.item = bot.getItems().getPathNearestSpawnedItem(ItemType.Category.HEALTH);
         if (item == null) {
             bot.getLog().warning("NO HEALTH ITEM TO RUN TO => ITEMS");
             // Return a new Attack object
             return new Attack();
         }
         
+        // Return this state
         return this;
     }
 
     @Override
     public void act(BotProjetIAS bot) {
         // Set the info to HURT
-        bot.getBot().getBotName().setInfo(STATE);
+        changeStateName(bot);
         
         bot.getNavigation().navigate(item);
         bot.setItem(item);
