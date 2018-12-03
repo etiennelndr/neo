@@ -28,8 +28,15 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerK
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 
@@ -38,6 +45,20 @@ import java.util.Map;
  */
 @AgentScoped
 public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
+    
+    static String addressTCP = "localhost";
+    static int portTCP       = 12400;
+    ClientTCP clientTCP;
+    
+    /**
+     * 
+     * @return 
+     */
+    public ClientTCP getClientTCP() {
+        return this.clientTCP;
+    }
+    
+    public static Lock locker;
     
     /**
      * Current state of our bot
@@ -117,7 +138,16 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      * got point for killing somebody)
      */
     @JProp
-    public int frags = 0;
+    private int frags = 0;
+    
+    /**
+     * 
+     * @return int
+     */
+    public int getFrags() {
+        return this.frags;
+    }
+    
     /**
      * how many times the hunter died
      */
@@ -133,7 +163,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     @EventListener(eventClass = PlayerKilled.class)
     public void playerKilled(PlayerKilled event) {
         if (info.getId().equals(event.getKiller())) {
-            ++frags;
+            ++this.frags;
             // Set isEnemyKilled from currentState to true
             currentState.setEnemyKilled(true);
         }
@@ -304,6 +334,11 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         // Set beingDamaged to false
         this.beingDamaged = false;
+        
+        // Set the number of frags to 0
+        this.frags = 0;
+        
+        this.clientTCP = new ClientTCP(addressTCP, portTCP);
     }
 
     /**
@@ -354,6 +389,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      * file in UT2004/System folder.
      */
     @Override
+    @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void logic() {
         // Transition
         currentState = currentState.transition(this);
@@ -361,11 +397,18 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Act
         currentState.act(this);
         
+        // Lock the code
+        locker.lock();
+        
         // Store values into database
-        currentState.insertStateValuesIntoDatabase(this);
+        //currentState.insertStateValuesIntoDatabase(this);
+        this.clientTCP.sendMessage("Hello I'm " + this.getInfo().getBotName().toString());
         
         // Update map
-        BotDatas.bots.replace(this.getName().toString(), this);
+        BotDatas.bots.replace(this.getName().toString().split(" ")[0], this);
+        
+        // Unlock the code
+        locker.unlock();
     }
 
     ///////////////
@@ -401,16 +444,53 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Reset the database
         BotProjetIAS.db.resetDatabase();
         
+        // Instantiate the map
         BotDatas.bots = new HashMap<String, BotProjetIAS>();
         
-        // starts 3 Hunters at once
-        // note that this is the most easy way to get a bunch of (the same) bots running at the same time        
-    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
+        // Create the locker
+        locker = new ReentrantLock();
+        
+        // Starts 4 Hunters at once
+        // Note that this is the most easy way to get a bunch 
+        // of (the same) bots running at the same time        
+    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(4);
     }
     
     // Static class to access private datas of each bot
     public static class BotDatas {
         // Static map
         public static Map<String, BotProjetIAS> bots;
+    }
+    
+    private class ClientTCP {
+        /**
+         * Socket which defined the connection to the server
+         */
+        Socket socket;
+        
+        DataOutputStream outToServer;
+        BufferedReader inFromServer;
+        
+        ClientTCP(String address, int port) {
+            try {
+                this.socket       = new Socket(address, port);
+                this.outToServer  = new DataOutputStream(this.socket.getOutputStream());
+                this.inFromServer = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        void sendMessage(String msg) {
+            try {
+                this.outToServer.writeBytes(msg);
+                
+                String response = this.inFromServer.readLine();
+                
+                System.out.println("FROM SERVER: " + response);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

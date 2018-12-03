@@ -24,8 +24,6 @@ import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.Calendar;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -34,34 +32,29 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Database {
     
-    private final static String URL      = "jdbc:mysql://localhost:3306/projetias?serverTimezone=UTC";
-    private final static String LOGIN    = "user_projetias";
-    private final static String PASSWORD = "1234abcd";
-    private final static String TABLE    = "bot_states";
-    
-    public static Lock locker;
+    //private final static String URL_MYSQL       = "jdbc:mysql://localhost:3306/projetias?serverTimezone=UTC";
+    private final static String URL_SQLITE      = "jdbc:sqlite:D:/Documents/NetBeansProjects/projetias/src/main/java/com/etiennelndr/projetias/bot_pogamut/projetias.db";
+    //private final static String LOGIN           = "user_projetias";
+    //private final static String PASSWORD        = "1234abcd";
+    private final static String TABLE           = "bot_states";
     
     private Connection con;
     
     private final static String QUERY_RESET                = "DELETE FROM " + TABLE;
-    private final static String QUERY_RESET_AUTO_INCREMENT = "ALTER TABLE " + TABLE +" AUTO_INCREMENT=0";
+    private final static String QUERY_RESET_AUTO_INCREMENT = "UPDATE sqlite_sequence SET seq = 0 WHERE name = '" + TABLE + "'";
     
     public Database() {
         try {
-            this.con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
+            //this.con = DriverManager.getConnection(URL_MYSQL, LOGIN, PASSWORD);
+            this.con = DriverManager.getConnection(URL_SQLITE);
         } catch(SQLException e) {
             System.out.println("ERROR : " + e.getMessage());
             System.exit(-1);
         }
-        
-        locker = new ReentrantLock();
     }
     
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void resetDatabase() {
-        // Lock the code
-        locker.lock();
-        
         try {
             // Create a new statement 
             Statement stmt = this.con.createStatement();
@@ -76,23 +69,17 @@ public class Database {
             System.out.println("ERROR : " + e.getMessage());
             System.exit(-1);
         }
-        
-        // Unlock the code
-        locker.unlock();
     }
     
     
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
-    public void insertInDatabase(BotProjetIAS bot) {
-        // Lock the code
-        locker.lock();
-        
+    public void insertInDatabase(BotProjetIAS bot) {      
         // Create a query to insert datas in a new row of the bot_state table
         String query;
         if (bot.getEnemy() == null)
-            query = "INSERT INTO " + TABLE + " (state, life, id_bot, date) VALUES (?, ?, ?, ?)";
+            query = "INSERT INTO " + TABLE + " (state, life, id_bot, enemy_killed, date) VALUES (?, ?, ?, ?, date('now'))";
         else 
-            query = "INSERT INTO " + TABLE + " (state, life, id_bot, id_enemy, enemy_life, date) VALUES (?, ?, ?, ?, ?, ?)";
+            query = "INSERT INTO " + TABLE + " (state, life, id_bot, enemy_killed, date, id_enemy, enemy_life) VALUES (?, ?, ?, ?, date('now'), ?, ?)";
         
         try {
             // Create a new statement
@@ -107,6 +94,8 @@ public class Database {
             preparedStmt.setInt(++stmtIndex, bot.getInfo().getHealth());
             // Id of the bot
             preparedStmt.setInt(++stmtIndex, bot.getIdBot());
+            // Number of enemy our bot has killed
+            preparedStmt.setInt(++stmtIndex, bot.getFrags());
             
             if (bot.getEnemy() != null) {
                 BotProjetIAS enemyBot = BotDatas.bots.get(bot.getEnemy().getName().split(" ")[0]);
@@ -118,11 +107,6 @@ public class Database {
                 preparedStmt.setInt(++stmtIndex, enemyBot.getInfo().getHealth());
             }
             
-            // Current date
-            Calendar calendar = Calendar.getInstance();
-            java.sql.Date date = new java.sql.Date(calendar.getTime().getTime());
-            preparedStmt.setDate(++stmtIndex, date);
-            
             // Execute the statement
             preparedStmt.execute();
             
@@ -132,8 +116,5 @@ public class Database {
             System.out.println("ERROR : " + e.getMessage());
             System.exit(-1);
         }
-        
-        // Unlock the code
-        locker.unlock();
     }
 }
