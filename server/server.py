@@ -31,8 +31,8 @@ class Server():
         client, address = self.__socket.accept()
 
         if (address[0] == '' or address[0] == 'localhost' or address[0] == '127.0.0.1'):
-            print("new client : " + address)
-            thread_client = Thread(target=self.__runClient, args=client).start()
+            print("new client : " + address[0])
+            thread_client = Thread(target=self.__runClient, args=(client,)).start()
             self.__threads.append(thread_client)
             self.__threadId.append("client")
         else:
@@ -52,6 +52,8 @@ class Server():
         resp = client.recv(255)
         if resp != "":
             print(resp)
+
+            client.send(resp + ":YOLOOOOO")
 
     def __close(self):
         self.__socket.close()
