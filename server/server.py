@@ -29,15 +29,16 @@ class Server():
         self.__threads.append(thread_stats)
         self.__threadId.append("stats")
 
-        client, address = self.__socket.accept()
+        while (self.__state != "stop"):
+            client, address = self.__socket.accept()
 
-        if ((address[0] == '' or address[0] == 'localhost' or address[0] == '127.0.0.1') and (len(self.__threads) <= self.__maxNbrOfClients)):
-            print("new client : " + address[0])
-            thread_client = Thread(target=self.__runClient, args=(client,)).start()
-            self.__threads.append(thread_client)
-            self.__threadId.append("client")
-        else:
-            client.close()
+            if ((address[0] == '' or address[0] == 'localhost' or address[0] == '127.0.0.1') and (len(self.__threads) <= self.__maxNbrOfClients)):
+                print("new client : " + address[0])
+                thread_client = Thread(target=self.__runClient, args=(client,)).start()
+                self.__threads.append(thread_client)
+                self.__threadId.append("client")
+            else:
+                client.close()
 
     def __stats(self):
         while (self.__state != "stop"):
@@ -55,11 +56,17 @@ class Server():
             if req != "":
                 # Print the request
                 print(req)
-                client.send(req + ":YOLOOOOO\n")
-                print(req + ":YOLOOOOO")
+                client.send("YOLOOOOO\n")
+
+        # Close the connection
+        client.close()
 
     def __close(self):
         self.__socket.close()
+
+        for i in range (0, len(self.__threads)):
+            if (self.__threadId == "client"):
+                self.__threads[i].join()
 
         for i in range (0, len(self.__threads)):
             if (self.__threadId == "client"):

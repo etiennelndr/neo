@@ -28,7 +28,6 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerK
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -471,33 +470,34 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         Socket socket;
         
         BufferedOutputStream  outToServer;
-        BufferedInputStream inFromServer;
+        BufferedReader inFromServer;
         
         ClientTCP(String address, int port) {
             try {
                 this.socket       = new Socket(address, port);
                 this.outToServer  = new BufferedOutputStream(this.socket.getOutputStream());
-                //this.inFromServer = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-                this.inFromServer = new BufferedInputStream(this.socket.getInputStream());
+                this.inFromServer = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             } catch(IOException e) {
                 e.printStackTrace();
             }
         }
         
-        void sendMessage(String msg) {
+        String sendMessage(String msg) {
             try {
                 // Write the datas in the buffer
                 this.outToServer.write(msg.getBytes());
                 // Flush the buffer to send the datas
                 this.outToServer.flush();
                 // Wait for a response
-                byte[] response = new byte[0];
-                this.inFromServer.read(response);
+                String response = this.inFromServer.readLine();
                 // Then print it
-                System.out.println("FROM SERVER: " + response.toString());
+                System.out.println("FROM SERVER: " + response);
+                
+                return response;
             } catch(IOException e) {
                 e.printStackTrace();
             }
+            return "ERROR";
         }
     }
 }
