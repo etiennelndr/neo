@@ -28,6 +28,8 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerK
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -468,14 +470,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
          */
         Socket socket;
         
-        DataOutputStream outToServer;
-        BufferedReader inFromServer;
+        BufferedOutputStream  outToServer;
+        BufferedInputStream inFromServer;
         
         ClientTCP(String address, int port) {
             try {
                 this.socket       = new Socket(address, port);
-                this.outToServer  = new DataOutputStream(this.socket.getOutputStream());
-                this.inFromServer = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                this.outToServer  = new BufferedOutputStream(this.socket.getOutputStream());
+                //this.inFromServer = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                this.inFromServer = new BufferedInputStream(this.socket.getInputStream());
             } catch(IOException e) {
                 e.printStackTrace();
             }
@@ -483,11 +486,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         void sendMessage(String msg) {
             try {
-                this.outToServer.writeBytes(msg);
-                
-                String response = this.inFromServer.readLine();
-                
-                System.out.println("FROM SERVER: " + response);
+                // Write the datas in the buffer
+                this.outToServer.write(msg.getBytes());
+                // Flush the buffer to send the datas
+                this.outToServer.flush();
+                // Wait for a response
+                byte[] response = new byte[0];
+                this.inFromServer.read(response);
+                // Then print it
+                System.out.println("FROM SERVER: " + response.toString());
             } catch(IOException e) {
                 e.printStackTrace();
             }
