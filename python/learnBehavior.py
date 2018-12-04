@@ -22,7 +22,7 @@
 # ==============================================================================
 
 # Python standard distribution
-
+# MJ TODOS : changes config
 import sys, re, os
 import time
 
@@ -427,23 +427,14 @@ def learn(experiment, analyser):
         analyser.analyse()
 
 
-    # fileName = currentExp.predictionsFilePath()
-    # print("file for plotting predictions: " + fileName)
-    # computeAndSavePredictionsForPlotting(currentExp.model, 
-    #     fileName)
-
-    # saveModel(currentExp.model, 
-    #     currentExp.resultsDirPath,
-    #     currentExp.modelName + '_' + currentExp.timeStamp, 
-    #     )
-
     return
 
 if __name__ == "__main__":
 
  # Data
     # used to define the dimensions of the data (X,Y)
-    data = LearningData(2, 2)
+    #MJ : input ??? values,
+    data = LearningData(2, 2) 
 
     # Where to read and write the different files
     if len(sys.argv) > 0:
@@ -474,8 +465,10 @@ if __name__ == "__main__":
     experimentParameters.outputLayerActivationFunction = 'linear' # TODO set this value
     experimentParameters.lossFunction = 'mse' 
     experimentParameters.optimizer = 'adam'
+
+    #layers to DEFINE for better result
     experimentParameters.layers = np.array([6,4,2]) # TODO define here the configuration of the network
-    experimentParameters.nMaxEpochs = 2500 # TODO set this value
+    experimentParameters.nMaxEpochs = 10000 # TODO set this value
 
     LearningExperiment.verbose = 1
 
