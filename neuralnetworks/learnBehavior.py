@@ -466,7 +466,7 @@ if __name__ == "__main__":
     experimentParameters.lossFunction = 'mse' 
     experimentParameters.optimizer = 'adam'
 
-    #layers to DEFINE for better result
+    # Layers to DEFINE for better result
     experimentParameters.layers = np.array([6,4,2]) # TODO define here the configuration of the network
     experimentParameters.nMaxEpochs = 10000 # TODO set this value
 

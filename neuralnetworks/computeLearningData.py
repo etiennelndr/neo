@@ -12,25 +12,26 @@ import sys
 import numpy
 import pandas
 
-from agentModelAdapter import clampToPiMinusPi
-from agentModelAdapter import pointToPointDistance
-
 def prepareLearningData(rawDataPath, learningDataPath):
     print("Load the data set (raw formatting) from " + rawDataPath)
-    #changed 
-    stateFrame = pandas.read_csv(rawDataPath, usecols=[0], sep=';')
-    lifeFrame = pandas.read_csv(rawDataPath, usecols=[1], sep=';')
-    ennemyKilledFrame = pandas.read_csv(rawDataPath, usecols=[3], sep=";")
-    ennemyLifeFrame = pandas.read_csv(rawDataPath, usecols=[6], sep=';')
-    distanceEnnemyFrame = pandas.read_csv(rawDataPath,usecols=[7],sep';')
-    walkBeforeFrame = pandas.read_csv(rawDataPath,usecols=[8],sep';')
+    xFrame     = pandas.read_csv(rawDataPath, usecols=[0], sep=',')
+    yFrame     = pandas.read_csv(rawDataPath, usecols=[1], sep=',')
+    vxFrame    = pandas.read_csv(rawDataPath, usecols=[2], sep=",")
+    vyFrame    = pandas.read_csv(rawDataPath, usecols=[3], sep=',')
+    pitchFrame = pandas.read_csv(rawDataPath, usecols=[4], sep=',')
+    yawFrame   = pandas.read_csv(rawDataPath, usecols=[6], sep=',')
 
-    state = stateFrame.values
-    life = lifeFrame.values
-    ennemyKilled = ennemyLifeFrame.values
-    ennemyLife = ennemyLifeFrame.values
+    x     = xFrame.values
+    y     = yFrame.values
+    vx    = vxFrame.values
+    vy    = vyFrame.values
+    pitch = pitchFrame.values
+    yaw   = yawFrame.values
+    
+    print(x)
+    print(y)
 
-    nRecords = state.shape[0]
+    nRecords = x.shape[0]
 
     print('Number of Records: ' + str(nRecords))
 
@@ -42,32 +43,12 @@ def prepareLearningData(rawDataPath, learningDataPath):
     #maybe some changes 
     for i in range(nRecords):
 
-        # Agent's orientation (direction of move in the horizontal plane)
-        aPsi = clampToPiMinusPi(numpy.pi / 2 - aOri[i][0])
-    
-        # Position of the target, relative to the agent's position (in the horizontal plane)
-        d = pointToPointDistance(tPos[i], aPos[i])
-        if d > 0:
-            tPosA = tPos[i] - aPos[i]
-            azim = numpy.arctan2(tPosA[2], tPosA[0])
-            theta = clampToPiMinusPi(aPsi - azim)
-        else:
-            theta = 0.0
-
-        # estimated velocities of the agent
+        # For the moment we have nothing to transform
         if i > 0:
-            deltaT = time[i][0] - time[i-1][0]
-            aLinearVelocity = pointToPointDistance(aPos[i], aPos[i-1]) / deltaT
-  
-            aPsi1, aPsi2 = aOri[i-1][0], aOri[i][0]
-            dPsi = clampToPiMinusPi(aPsi2 - aPsi1)
-            aAngularVelocity = dPsi / deltaT
-            #print("Vang: " + str(aAngularVelocity) + ": " + str(aPsi2) + " - " + str(aPsi2) + " = " + str(dPsi) + " / " + str(deltaT))
-        
-            targetFile.write(str(time[i][0]) 
-                + ";" + str(d) + ";" + str(theta) 
-                + ";" + str(aLinearVelocity) + ";" + str(aAngularVelocity) 
-                + "\r\n")
+            targetFile.write(str(x[i][0]) 
+                    + ";" + str(y[i][0]) + ";" + str(vx[i][0]) 
+                    + ";" + str(vy[i][0]) + ";" + str(pitch[i][0]) 
+                    + ";" + str(yaw[i][0]) + "\n")
         
     targetFile.close()
     return

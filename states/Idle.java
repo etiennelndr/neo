@@ -30,12 +30,14 @@ import java.util.List;
  * @author Etienne
  */
 public class Idle extends State {
+    int t;
     /**
      * Constructor for Idle class
      */
     public Idle() {
         // Change the title to IDLE
         super("IDLE");
+        t=0;
     }
 
     @Override
@@ -79,16 +81,26 @@ public class Idle extends State {
         
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
-            bot.getLog().warning("NO ITEM TO RUN FOR!");
+            System.out.println("null " + t);
+            t = (t + 15) % 16;
+            bot.getBot().getLocation().setZ(t % 16);
+            /*bot.getLog().warning("NO ITEM TO RUN FOR!");
             if (bot.getNavigation().isNavigating())
                 return;
             bot.getBot().getBotName().setInfo("RANDOM NAV");
-            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());
+            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());*/
         } else {
-            bot.setItem(item);
+            System.out.println("not null " + t + " " + bot.getBot().getRotation().getYaw() + t);
+            t = (t + 15) % 16;
+            bot.getBot().getVelocity().setX(t);
+            bot.getBot().getRotation().setYaw(bot.getBot().getRotation().getYaw() + t);
+            System.out.println(bot.getBot().getRotation().getYaw());
+            bot.getBot().getRotation().setRoll(t);
+            bot.getBot().getRotation().setPitch(t);
+            /*bot.setItem(item);
             bot.getLog().info("RUNNING FOR: " + item.getType().getName());
             bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-            bot.getNavigation().navigate(item);  	
+            bot.getNavigation().navigate(item);*/
         }    
     }
 }

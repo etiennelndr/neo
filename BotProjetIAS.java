@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import cz.cuni.amis.introspection.java.JProp;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Rotation;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
@@ -339,7 +341,8 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Set the number of frags to 0
         this.frags = 0;
         
-        this.clientTCP = new ClientTCP(addressTCP, portTCP);
+        // Connect to the server
+        //this.clientTCP = new ClientTCP(addressTCP, portTCP);
     }
 
     /**
@@ -389,21 +392,35 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      * is affected by visionTime variable, that can be adjusted in GameBots ini
      * file in UT2004/System folder.
      */
+    int t = 0;
     @Override
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void logic() {
         // Transition
         currentState = currentState.transition(this);
         
+        /*t = (t + 15) % 16;
+        System.out.println("not null " + t + " " + (info.getLocation().x));
+        Rotation r = info.getRotation().setYaw(info.getRotation().getYaw() + t);
+        System.out.println(info.getLocation().x);
+        Location rot = new Rotation(1.0,1.0,1.0).toLocation();*/
+        //this.getMove().jump();
+        /*Location l = new Location(bot.getLocation().x + 20, bot.getLocation().y + 20);
+        this.getMove().moveTo(l);*/
+        // Yaw -> horizontal
+        // Pitch -> vertical
+        //this.getMove().turnHorizontal(t);
+        
+        
         // Act
-        currentState.act(this);
+        //currentState.act(this);
         
         // Lock the code
         locker.lock();
         
         // Store values into database
         //currentState.insertStateValuesIntoDatabase(this);
-        this.clientTCP.sendMessage("Hello I'm " + this.getInfo().getBotName().toString());
+        //this.clientTCP.sendMessage("Hello I'm " + this.getInfo().getBotName().toString());
         
         // Update map
         BotDatas.bots.replace(this.getName().toString().split(" ")[0], this);
@@ -454,7 +471,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Starts 4 Hunters at once
         // Note that this is the most easy way to get a bunch 
         // of (the same) bots running at the same time        
-    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(4);
+    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(1);
     }
     
     // Static class to access private datas of each bot
