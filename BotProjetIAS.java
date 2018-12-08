@@ -415,15 +415,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     ///////////////
     // STATE HIT //
     ///////////////
-    protected void stateHit() {
+    //protected void stateHit() {
         //log.info("Decision is: HIT");
-        bot.getBotName().setInfo("HIT");
-        if (navigation.isNavigating()) {
-        	navigation.stopNavigation();
-        	item = null;
-        }
-        getAct().act(new Rotate().setAmount(32000));
-    }
+//        bot.getBotName().setInfo("HIT");
+//        if (navigation.isNavigating()) {
+//        	navigation.stopNavigation();
+//        	item = null;
+//        }
+//        getAct().act(new Rotate().setAmount(32000));
+//    //}
 
     ////////////////////////////
     // STATE RUN AROUND ITEMS //
@@ -454,7 +454,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Starts 4 Hunters at once
         // Note that this is the most easy way to get a bunch 
         // of (the same) bots running at the same time        
-    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(4);
+    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
     }
     
     // Static class to access private datas of each bot
