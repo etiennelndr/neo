@@ -29,7 +29,7 @@ class NeuralVelocityController:
             print("Error: you must provide the name of the file for the network architecture: --archi <networkName.json>")
             sys.exit()
 
-        if self.architectureFilename == '':
+        if self.weightsFileName == '':
             print("Error: you must provide the name of the file for the synaptic connections weights: --weights <networkName.hdf5>")
             sys.exit()
 
@@ -79,7 +79,7 @@ def unitaryTests():
     neuralController.configure(opts, args)
     neuralController.build()
 
-    feature = [0.5, 0.5]
+    feature = [2044.82, -350.42]
     sample = np.array([feature])
     print(str(neuralController.process(sample)))
 

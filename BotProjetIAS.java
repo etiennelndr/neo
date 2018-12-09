@@ -342,7 +342,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         this.frags = 0;
         
         // Connect to the server
-        //this.clientTCP = new ClientTCP(addressTCP, portTCP);
+        this.clientTCP = new ClientTCP(addressTCP, portTCP);
     }
 
     /**
@@ -413,14 +413,14 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         
         // Act
-        //currentState.act(this);
+        currentState.act(this);
         
         // Lock the code
         locker.lock();
         
         // Store values into database
         //currentState.insertStateValuesIntoDatabase(this);
-        //this.clientTCP.sendMessage("Hello I'm " + this.getInfo().getBotName().toString());
+        //this.clientTCP.sendMessage("[" + bot.getLocation().x + " " + bot.getLocation().y + "]");
         
         // Update map
         BotDatas.bots.replace(this.getName().toString().split(" ")[0], this);
@@ -480,7 +480,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         public static Map<String, BotProjetIAS> bots;
     }
     
-    private class ClientTCP {
+    public class ClientTCP {
         /**
          * Socket which defined the connection to the server
          */
@@ -489,7 +489,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         BufferedOutputStream  outToServer;
         BufferedReader inFromServer;
         
-        ClientTCP(String address, int port) {
+        public ClientTCP(String address, int port) {
             try {
                 this.socket       = new Socket(address, port);
                 this.outToServer  = new BufferedOutputStream(this.socket.getOutputStream());
@@ -499,7 +499,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
             }
         }
         
-        String sendMessage(String msg) {
+        public String sendMessage(String msg) {
             try {
                 // Write the datas in the buffer
                 this.outToServer.write(msg.getBytes());

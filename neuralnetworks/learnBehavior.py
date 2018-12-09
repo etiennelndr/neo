@@ -52,8 +52,6 @@ from behaviorData import TwoDVelocityData
 from learningExperiment import LearningExperiment
 from learningAnalyser import LearningAnalyser
 
-from plotLearnedModel import plotPredictions
-
 # ==============================================================================
 class MLPLearningExperiment(LearningExperiment):
     
@@ -467,7 +465,7 @@ if __name__ == "__main__":
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
-    experimentParameters.layers = np.array([6,4,2]) # TODO define here the configuration of the network
+    experimentParameters.layers = np.array([3,3,4]) # TODO define here the configuration of the network
     experimentParameters.nMaxEpochs = 10000 # TODO set this value
 
     LearningExperiment.verbose = 1

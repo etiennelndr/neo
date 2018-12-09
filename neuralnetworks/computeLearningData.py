@@ -44,11 +44,10 @@ def prepareLearningData(rawDataPath, learningDataPath):
     for i in range(nRecords):
 
         # For the moment we have nothing to transform
-        if i > 0:
-            targetFile.write(str(x[i][0]) 
-                    + ";" + str(y[i][0]) + ";" + str(vx[i][0]) 
-                    + ";" + str(vy[i][0]) + ";" + str(pitch[i][0]) 
-                    + ";" + str(yaw[i][0]) + "\n")
+        targetFile.write(str(x[i][0]) 
+                + ";" + str(y[i][0]) + ";" + str(vx[i][0]) 
+                + ";" + str(vy[i][0]) + ";" + str(pitch[i][0]) 
+                + ";" + str(yaw[i][0]) + "\n")
         
     targetFile.close()
     return

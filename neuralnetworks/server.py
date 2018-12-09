@@ -1,9 +1,18 @@
+"""
+Exemple de lancement de ce programme:
+    python3 server.py --archi data/MLP_3x3x4_2018-12-09-01-29-58.json --weights data/MLP_3x3x4_2018-12-09-01-29-58.hdf5
+"""
+
 try:
     import sys
     import socket
-    from threading import Thread
+    import getopt
+    from agentModelAdapter import AgentModelAdapter
+    from neuralController import NeuralVelocityController
+    from threading import Thread, Lock
+    import numpy as np
 except ImportError as err:
-    print(err.msg)
+    print(err)
     sys.exit(1)
 
 class Server():
@@ -16,10 +25,19 @@ class Server():
         self.__threads        = []
         self.__threadId       = []
         self.__state          = ""
+        self.__mutex          = Lock()
 
     # This method is the main method of the class Server
     def run(self):
         print("running")
+        
+        opts, args = self.__parseCommandLine()
+        
+        self.__dataAdapter = AgentModelAdapter()
+        self.__behaviorController = NeuralVelocityController()
+        behaviorController.configure(opts, args)
+        behaviorController.build()
+        
         # Bind socket
         self.__socket.bind((self.__address, self.__port))
         # Listen to maxNbrOfClients clients
@@ -42,32 +60,66 @@ class Server():
 
     def __stats(self):
         while (self.__state != "stop"):
-            self.__state = sys.stdin.read().split("\n")[0]
+            self.__state = sys.stdin.readline().split("\n")[0]
             if (self.__state == "nbrOfClients"):
                 print(len(self.__threads) - 1)
-
         self.__close()
+        
+    def __parseCommandLine(self):
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "halw:v", ["help", "archi=", "length=", "weights="])
+        except getopt.GetoptError as err:
+            print(str(err))
+            sys.exit(2)
+        verbose = False
+        for opt, arg in opts:
+            if opt == "-v":
+                verbose = True
+            elif opt in ("-h", "--help"):
+                sys.exit()
+    
+        return opts, args
 
     def __runClient(self, client):
         print("runClient")
 
         while (self.__state != "stop"):
-            req = client.recv(8192)
-            if req != "":
-                # Print the request
-                print(req)
-                client.send("YOLOOOOO\n")
+            try:
+                req = client.recv(8192)
+                if req != "":
+                    # Print the request
+                    self.__mutex.acquire()
+                    values = self.__splitData(req)
+                    result = self.__processData(values)
+                    self.__mutex.release()
+                    client.send(str(result))
+            except socket.error as error:
+                print(error)
+                client.close()
+                break
 
         # Close the connection
         client.close()
+        
+    def __processData(self, data):
+        inputData = self.__dataAdapter.prepareInputData(data)
+        result = self.__behaviorController.process(inputData)
+        print(str(inputData) + ' --> ' + str(result))
+        return result
+    
+    def __splitData(self, data):
+        d = data.split("[")[1].split(']')[0]
+        values = d.split(" ")
+        return (np.array((float(values[0]), float(values[1]))))
 
     def __close(self):
+        # Close the main socket
         self.__socket.close()
-
+        
         for i in range (0, len(self.__threads)):
             if (self.__threadId == "client"):
                 self.__threads[i].join()
-
+        
         for i in range (0, len(self.__threads)):
             if (self.__threadId == "client"):
                 self.__threads[i].close()
