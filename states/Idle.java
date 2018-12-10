@@ -94,12 +94,12 @@ public class Idle extends State {
             System.out.println(bot.getBot().getRotation().getYaw());
             bot.getBot().getRotation().setRoll(t);
             bot.getBot().getRotation().setPitch(t);*/
-            String resp = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
             System.out.println(resp);
             /*bot.setItem(item);
             bot.getLog().info("RUNNING FOR: " + item.getType().getName());
             bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-            bot.getNavigation().navigate(item);
+            bot.getNavigation().navigate(item);*/
         }
     }
 }
