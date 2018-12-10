@@ -1,0 +1,5 @@
+Commandes à exécuter pour l'apprentissage et l'utilisation du réseau de neurones (se place dans le dossier neuralnetworks) :
+	- python3 computeLearningData.py data/observer_12-08-2018_11-06-24.csv data/behavior_data.csv
+	- python3 splitDataSet.py data/behavior_data.csv
+	- python3 learnBehavior.py data behavior_data
+	- python3 server.py --archi data/MLP_2x6x4_2018-12-10-19-36-22.json --weights data/MLP_2x6x4_2018-12-10-19-36-22.hdf5

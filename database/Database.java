@@ -33,8 +33,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Database {
     
     //private final static String URL_MYSQL       = "jdbc:mysql://localhost:3306/projetias?serverTimezone=UTC";
-    //private final static String URL_SQLITE      = "jdbc:sqlite:D:/Documents/NetBeansProjects/projetias/src/main/java/com/etiennelndr/projetias/bot_pogamut/projetias.db";
-    private final static String URL_SQLITE      = "jdbc:sqlite:C:/Users/matth/Documents/NetBeansProjects/projetias/src/main/java/com/etiennelndr/projetias/bot_pogamut/projetias.db";
+    private final static String URL_SQLITE      = "jdbc:sqlite:D:/Documents/NetBeansProjects/projetias/src/main/java/com/etiennelndr/projetias/bot_pogamut/projetias.db";
+    //private final static String URL_SQLITE      = "jdbc:sqlite:C:/Users/matth/Documents/NetBeansProjects/projetias/src/main/java/com/etiennelndr/projetias/bot_pogamut/projetias.db";
     //private final static String LOGIN           = "user_projetias";
     //private final static String PASSWORD        = "1234abcd";
     private final static String TABLE           = "bot_states";

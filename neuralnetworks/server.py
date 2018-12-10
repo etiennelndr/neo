@@ -7,6 +7,7 @@ try:
     import sys
     import socket
     import getopt
+    import struct
     from agentModelAdapter import AgentModelAdapter
     from neuralController import NeuralVelocityController
     from threading import Thread, Lock
@@ -33,28 +34,28 @@ class Server():
         
         opts, args = self.__parseCommandLine()
         
-        self.__dataAdapter = AgentModelAdapter()
         self.__behaviorController = NeuralVelocityController()
-        behaviorController.configure(opts, args)
-        behaviorController.build()
+        self.__behaviorController.configure(opts, args)
+        self.__behaviorController.build()
         
         # Bind socket
         self.__socket.bind((self.__address, self.__port))
         # Listen to maxNbrOfClients clients
         self.__socket.listen(self.__maxNbrOfClients)
 
-        thread_stats = Thread(target=self.__stats).start()
-        self.__threads.append(thread_stats)
-        self.__threadId.append("stats")
+        #thread_stats = Thread(target=self.__stats).start()
+        #self.__threads.append(thread_stats)
+        #self.__threadId.append("stats")
 
         while (self.__state != "stop"):
             client, address = self.__socket.accept()
 
             if ((address[0] == '' or address[0] == 'localhost' or address[0] == '127.0.0.1') and (len(self.__threads) <= self.__maxNbrOfClients)):
                 print("new client : " + address[0])
-                thread_client = Thread(target=self.__runClient, args=(client,)).start()
-                self.__threads.append(thread_client)
-                self.__threadId.append("client")
+                #thread_client = Thread(target=self.__runClient, args=(client,)).start()
+                self.__runClient(client)
+                #self.__threads.append(thread_client)
+                #self.__threadId.append("client")
             else:
                 client.close()
 
@@ -92,9 +93,10 @@ class Server():
                     values = self.__splitData(req)
                     result = self.__processData(values)
                     self.__mutex.release()
-                    client.send(str(result))
+                    print(result[0], type(result[0]))
+                    client.send(bytes("[", "utf-8") + bytearray(struct.pack("f", result[0])) + bytes("]", "utf-8") + bytes("\n", "utf-8"))
+                    print("yolo")
             except socket.error as error:
-                print(error)
                 client.close()
                 break
 
@@ -102,15 +104,19 @@ class Server():
         client.close()
         
     def __processData(self, data):
-        inputData = self.__dataAdapter.prepareInputData(data)
-        result = self.__behaviorController.process(inputData)
-        print(str(inputData) + ' --> ' + str(result))
+        result = self.__behaviorController.process(data)
+        print(str(data) + ' --> ' + str(result))
         return result
     
     def __splitData(self, data):
+        data = data.decode("utf-8")
         d = data.split("[")[1].split(']')[0]
-        values = d.split(" ")
-        return (np.array((float(values[0]), float(values[1]))))
+        splitValues = d.split(" ")
+
+        values = [float(splitValues[0]), float(splitValues[1])]
+        datas = np.array([values])
+
+        return datas
 
     def __close(self):
         # Close the main socket

@@ -48,7 +48,7 @@ class TwoDVelocityData(LearningData):
 
     def __init__(self):
         # Define the dimensions for the Input (X) and the output (Y) variables
-        xDim, yDim = 2, 4 
+        xDim, yDim = 2, 4
         super().__init__(xDim, yDim)
         
         self.X.names = ['x', 'y']

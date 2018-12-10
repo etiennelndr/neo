@@ -35,6 +35,7 @@ from keras.models import load_model
 from keras.layers import Dense, Dropout
 from keras.callbacks import EarlyStopping
 from keras.callbacks import ModelCheckpoint
+from keras import optimizers
 
 # The two following lines are needed for plotting on MacOS
 # when running the script within a virtual environment
@@ -95,6 +96,8 @@ class MLPLearningExperiment(LearningExperiment):
             print("Compiling the model " + self.modelName + " ...")
             print("\t - optimizer : " + self.optimizer)
             print("\t - loss function : " + self.lossFunction)
+
+        #sgd = optimizers.SGD(lr=0.0001, decay=0.0, momentum=0.9, nesterov=False)
 
         self.model.compile(optimizer = self.optimizer,
             loss = self.lossFunction,
@@ -263,40 +266,6 @@ class MLPLearningExperiment(LearningExperiment):
 
         return
 
-
-    # def makePredictions(self):
-    #     nPoints = 3
-    #     if self.learningData.X.isScaled:
-    #         X1 = np.linspace(self.learningData.X.scalingRanges[0][0],
-    #             self.learningData.X.scalingRanges[0][1],
-    #             num = nPoints,
-    #             endpoint = True)
-    #         X2 = np.linspace(self.learningData.X.scalingRanges[1][0],
-    #             self.learningData.X.scalingRanges[1][1],
-    #             num = nPoints,
-    #             endpoint = True)
-    #     else:
-    #         X1 = np.linspace(self.learningData.X.domains[0][0],
-    #             self.learningData.X.domains[0][1],
-    #             num = nPoints,
-    #             endpoint = True)
-    #         X2 = np.linspace(self.learningData.X.domains[1][0],
-    #             self.learningData.X.domains[1][1],
-    #             num = nPoints,
-    #             endpoint = True)
-    #     print(str(X1))
-    #     print(str(X2))
-    #     Y = np.zeros((nPoints * nPoints, 4))
-    #     i = 0
-    #     for x1 in X1:
-    #         for x2 in X2:
-    #             values = np.array([[x1,x2]])
-    #             y = self.model.predict(values)[0]
-    #             Y[i, 0], Y[i, 1] = x1, x2
-    #             Y[i, 2], Y[i, 3] = y[0], y[1]
-    #             i += 1
-    #     return Y
-
     def savePredictions(self, XY):
         fName = self.resultsDirPath + os.path.sep \
             + self.modelName + '_' + self.timeStamp \
@@ -304,28 +273,7 @@ class MLPLearningExperiment(LearningExperiment):
         np.savetxt(fName, XY, delimiter=';')
         return
 
-# Some functions
-
-# def computeAndSavePredictions(model, modelName, dirName):
-#     distances = np.arange(0, 10, 1)
-#     azimuths = np.arange(-np.pi, np.pi, np.pi/12)
-#     predictedOutput = np.zeros(2)
-#     time = .0
-#     predictionFile = open(dirName + os.path.sep + modelName + '_predictions.csv', "w")
-#     for d in distances:
-#         for a in azimuths:
-#             time += 1.0
-#             dummy = np.array([[d,a]])
-#             predictedOutput = model.predict(dummy)[0]
-#             predictionFile.write(str(time) + ";" + str(predictedOutput[0]) + ";" + str(predictedOutput[1]) + ";" + str(d) + ";" + str(a) + "\r\n")
-
-#     predictionFile.close()
-#     return
-
-
 def computeAndSavePredictionsForPlotting(model, targetFilePathName):
-    #distances = np.arange(-1.0, 1.0, .1)
-    #azimuths = np.arange(-1.0, 1.0, .1)
     distances = np.arange(0, 10, .5)
     azimuths = np.arange(-np.pi, np.pi, np.pi/12)
     predictedOutput = np.zeros(2)
@@ -405,10 +353,6 @@ def learn(experiment, analyser):
     # Learning
     print("Learning " + currentExp.modelName + " ...")
     callbacks = []
-    #es = EarlyStopping(monitor='val_loss', min_delta = 0.001, patience = 50)
-    #callbacks.append(es)
-    #weight_save_callback = ModelCheckpoint('MLP_best_weights.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_loss', verbose=0, save_best_only=True, mode='auto')
-    #callbacks.append(weight_save_callback)
 
     currentExp.learn(callbacks)
     currentExp.plotLearningCurve()
@@ -423,16 +367,15 @@ def learn(experiment, analyser):
     if analyser:
         analyser.setExperiment(currentExp)
         analyser.analyse()
-
-
+    
     return
 
 if __name__ == "__main__":
 
- # Data
+    # Data
     # used to define the dimensions of the data (X,Y)
     #MJ : input ??? values,
-    data = LearningData(2, 2)
+    data = LearningData(2, 4)
 
     # Where to read and write the different files
     if len(sys.argv) > 0:
@@ -460,12 +403,12 @@ if __name__ == "__main__":
     experimentParameters.learningData = data
 
     experimentParameters.hiddenLayersActivationFunction = 'sigmoid' # TODO set this value
-    experimentParameters.outputLayerActivationFunction = 'linear' # TODO set this value
+    experimentParameters.outputLayerActivationFunction = 'tanh' # TODO set this value
     experimentParameters.lossFunction = 'mse'
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
-    experimentParameters.layers = np.array([3,3,4]) # TODO define here the configuration of the network
+    experimentParameters.layers = np.array([2,6,2,4]) # TODO define here the configuration of the network
     experimentParameters.nMaxEpochs = 10000 # TODO set this value
 
     LearningExperiment.verbose = 1

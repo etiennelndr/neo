@@ -58,6 +58,7 @@ class NeuralVelocityController:
         return
 
     def process(self, features):
+        print("in neuralController", features, type(features))
         return (self._model.predict(features))[0]
 
 def usage():

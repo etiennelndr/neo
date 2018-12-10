@@ -25,4 +25,6 @@ hs_err_pid*
 .vs/ProjectSettings.json
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
+
+# Python compiled code
 *.pyc

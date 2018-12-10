@@ -79,9 +79,10 @@ public class Idle extends State {
 
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
-            String resp = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            System.out.println(resp);
-            /*bot.getLog().warning("NO ITEM TO RUN FOR!");
+            //System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            //String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            //System.out.println(response);
+            bot.getLog().warning("NO ITEM TO RUN FOR!");
             if (bot.getNavigation().isNavigating())
                 return;
             bot.getBot().getBotName().setInfo("RANDOM NAV");
@@ -94,12 +95,13 @@ public class Idle extends State {
             System.out.println(bot.getBot().getRotation().getYaw());
             bot.getBot().getRotation().setRoll(t);
             bot.getBot().getRotation().setPitch(t);*/
-            String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            System.out.println(resp);
-            /*bot.setItem(item);
+            //System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            //String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            //System.out.println(response);
+            bot.setItem(item);
             bot.getLog().info("RUNNING FOR: " + item.getType().getName());
             bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-            bot.getNavigation().navigate(item);*/
+            bot.getNavigation().navigate(item);
         }
     }
 }

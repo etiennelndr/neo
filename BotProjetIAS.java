@@ -442,9 +442,9 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     ///////////////////////////////////
     public static void main(String args[]) throws PogamutException {
         // Open the connection with the database
-        BotProjetIAS.db = new Database();
+        //BotProjetIAS.db = new Database();
         // Reset the database
-        BotProjetIAS.db.resetDatabase();
+        //BotProjetIAS.db.resetDatabase();
 
         // Instantiate the map
         BotDatas.bots = new HashMap<String, BotProjetIAS>();
@@ -455,7 +455,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Starts 4 Hunters at once
         // Note that this is the most easy way to get a bunch
         // of (the same) bots running at the same time
-    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
+    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(1);
     }
 
     // Static class to access private datas of each bot

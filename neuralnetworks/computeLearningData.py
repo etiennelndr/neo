@@ -17,27 +17,25 @@ from agentModelAdapter import pointToPointDistance
 
 def prepareLearningData(rawDataPath, learningDataPath):
     print("Load the data set (raw formatting) from " + rawDataPath)
-    #changed
-    stateFrame = pandas.read_csv(rawDataPath, usecols=[0], sep=';')
-    lifeFrame = pandas.read_csv(rawDataPath, usecols=[1], sep=';')
-    ennemyKilledFrame = pandas.read_csv(rawDataPath, usecols=[3], sep=";")
-    ennemyLifeFrame = pandas.read_csv(rawDataPath, usecols=[6], sep=';')
-    distanceEnnemyFrame = pandas.read_csv(rawDataPath,usecols=[7],sep';')
-    walkBeforeFrame = pandas.read_csv(rawDataPath,usecols=[8],sep';')
+    xFrame     = pandas.read_csv(rawDataPath, usecols=[0], sep=',')
+    yFrame     = pandas.read_csv(rawDataPath, usecols=[1], sep=',')
+    vxFrame    = pandas.read_csv(rawDataPath, usecols=[2], sep=",")
+    vyFrame    = pandas.read_csv(rawDataPath, usecols=[3], sep=',')
+    pitchFrame = pandas.read_csv(rawDataPath, usecols=[4], sep=',')
+    yawFrame   = pandas.read_csv(rawDataPath, usecols=[6], sep=',')
 
-    state = stateFrame.values
-    life = lifeFrame.values
-    ennemyKilled = ennemyLifeFrame.values
-    ennemyLife = ennemyLifeFrame.values
+    x     = xFrame.values
+    y     = yFrame.values
+    vx    = vxFrame.values
+    vy    = vyFrame.values
+    pitch = pitchFrame.values
+    yaw = yawFrame.values
 
-    nRecords = state.shape[0]
+    nRecords = x.shape[0]
 
     print('Number of Records: ' + str(nRecords))
 
     targetFile = open(learningDataPath, "w")
-
-    #aLinearVelocity = 0.0
-    #aAngularVelocity = 0.0
 
     #maybe some changes
     for i in range(nRecords):
