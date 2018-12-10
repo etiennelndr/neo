@@ -30,14 +30,12 @@ import java.util.List;
  * @author Etienne
  */
 public class Idle extends State {
-    int t;
     /**
      * Constructor for Idle class
      */
     public Idle() {
         // Change the title to IDLE
         super("IDLE");
-        t=0;
     }
 
     @Override
@@ -45,11 +43,11 @@ public class Idle extends State {
         // If the bot is dead we have to return a Dead object
         if (bot.isDead())
             return new Dead();
-        
+
         // If we see an enemy and we have a loaded weapon -> return an Attack object
         if (bot.getPlayers().canSeeEnemies() && bot.getWeaponry().hasLoadedWeapon())
             return new Attack();
-        
+
         // Return this state
         return this;
     }
@@ -58,12 +56,12 @@ public class Idle extends State {
     public void act(BotProjetIAS bot) {
         // Set the info to IDLE
         changeStateName(bot);
-        
+
         if (bot.getNavigation().isNavigatingToItem())
             return;
-        
+
         List<Item> interesting = new ArrayList<Item>();
-        
+
         // ADD WEAPONS
         for (ItemType itemType : ItemType.Category.WEAPON.getTypes()) {
             if (!bot.getWeaponry().hasLoadedWeapon(itemType)) interesting.addAll(bot.getItems().getSpawnedItems(itemType).values());
@@ -78,7 +76,7 @@ public class Idle extends State {
         if (bot.getInfo().getHealth() < 100) {
             interesting.addAll(bot.getItems().getSpawnedItems(UT2004ItemType.HEALTH_PACK).values());
         }
-        
+
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
             String resp = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
@@ -87,7 +85,7 @@ public class Idle extends State {
             if (bot.getNavigation().isNavigating())
                 return;
             bot.getBot().getBotName().setInfo("RANDOM NAV");
-            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());*/
+            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());
         } else {
             /*System.out.println("not null " + t + " " + bot.getBot().getRotation().getYaw() + t);
             t = (t + 15) % 16;
@@ -101,7 +99,7 @@ public class Idle extends State {
             /*bot.setItem(item);
             bot.getLog().info("RUNNING FOR: " + item.getType().getName());
             bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-            bot.getNavigation().navigate(item);*/
-        }    
+            bot.getNavigation().navigate(item);
+        }
     }
 }

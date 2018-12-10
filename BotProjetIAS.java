@@ -9,8 +9,6 @@ import java.util.logging.Level;
 import cz.cuni.amis.introspection.java.JProp;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
-import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import cz.cuni.amis.pogamut.base3d.worldview.object.Rotation;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
@@ -42,61 +40,61 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 
+ *
  * @author Etienne (elandure@gmail.com)
  * @author Matthieu
  */
 @AgentScoped
 public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
-    
+
     static String addressTCP = "localhost";
     static int portTCP       = 12400;
     ClientTCP clientTCP;
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public ClientTCP getClientTCP() {
         return this.clientTCP;
     }
-    
+
     public static Lock locker;
-    
+
     /**
      * Current state of our bot
      */
     State currentState;
-    
+
     /**
      * Return an instance of the current state
-     * 
+     *
      * @return State
      */
     public State getCurrentState() {
         return this.currentState;
     }
-    
+
     /**
      * Database to store each states
      */
     public static Database db;
 
     /**
-     * 
+     *
      * @return BotProjetIAS
      */
     public static Database getDb() {
         return BotProjetIAS.db;
     }
-    
+
     /**
      * True if the bot is dead, otherwise false
      */
     private boolean dead;
-    
+
     /**
-     * 
+     *
      * @return boolean
      */
     public boolean isDead() {
@@ -104,8 +102,8 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     }
 
     /**
-     * 
-     * @param dead 
+     *
+     * @param dead
      */
     public void setDead(boolean dead) {
         this.dead = dead;
@@ -142,15 +140,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      */
     @JProp
     private int frags = 0;
-    
+
     /**
-     * 
+     *
      * @return int
      */
     public int getFrags() {
         return this.frags;
     }
-    
+
     /**
      * how many times the hunter died
      */
@@ -177,7 +175,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
             enemy = null;
         }
     }
-    
+
     /**
      * Used internally to maintain the information about the bot we're currently
      * hunting, i.e., should be firing at.
@@ -185,31 +183,31 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     protected Player enemy = null;
 
     /**
-     * 
+     *
      * @return Player : enemy
      */
     public Player getEnemy() {
         return enemy;
     }
-    
+
     /**
-     * 
+     *
      * @param enemy : set a new enemy
      */
     public void setEnemy(Player enemy) {
         this.enemy = enemy;
     }
-    
+
     /**
-     * 
+     *
      * @return Weaponry
      */
     public Weaponry getWeaponry() {
         return this.weaponry;
     }
-    
+
     /**
-     * 
+     *
      * @return Players
      */
     public Players getPlayers() {
@@ -217,60 +215,60 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     }
 
     /**
-     * Item we're running for. 
+     * Item we're running for.
      */
     protected Item item = null;
-    
+
     /**
      * Set a new value to the item
-     * 
-     * @param i 
+     *
+     * @param i
      */
     public void setItem(Item i) {
         this.item = i;
     }
-    
+
     /**
      * Taboo list of items that are forbidden for some time.
      */
     protected TabooSet<Item> tabooItems = null;
 
     /**
-     * 
+     *
      * @return TabooSet<Item>
      */
     public TabooSet<Item> getTabooItems() {
         return tabooItems;
     }
-    
+
     /**
-     * 
-     * @param tabooItems 
+     *
+     * @param tabooItems
      */
     public void setTabooItems(TabooSet<Item> tabooItems) {
         this.tabooItems = tabooItems;
     }
-    
+
     private UT2004PathAutoFixer autoFixer;
-    
+
     private static int instanceCount = 0;
-    
+
     private int idBot;
-    
+
     /**
      * Return the value of idBot attribute
-     * 
+     *
      * @return int
      */
     public int getIdBot() {
         return this.idBot;
     }
-    
+
     private boolean beingDamaged;
 
     /**
      * Return the value of the attribute begingDamaged
-     * 
+     *
      * @return boolean
      */
     public boolean isBeingDamaged() {
@@ -279,8 +277,8 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
 
     /**
      * Set a new value to the attribute begingDamaged
-     * 
-     * @param beingDamaged 
+     *
+     * @param beingDamaged
      */
     public void setBeingDamaged(boolean beingDamaged) {
         this.beingDamaged = beingDamaged;
@@ -289,7 +287,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     /**
      * Bot's preparation - called before the bot is connected to GB2004 and
      * launched into UT2004.
-     * 
+     *
      * @param bot
      */
     @Override
@@ -298,7 +296,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
 
         autoFixer = new UT2004PathAutoFixer(bot, navigation.getPathExecutor(), fwMap, aStar, navBuilder); // auto-removes wrong navigation links between navpoints
 
-        // listeners        
+        // listeners
         navigation.getState().addListener(new FlagListener<NavigationState>() {
 
             @Override
@@ -320,27 +318,27 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         });
 
         // DEFINE WEAPON PREFERENCES
-        weaponPrefs.addGeneralPref(UT2004ItemType.LIGHTNING_GUN, true);                
+        weaponPrefs.addGeneralPref(UT2004ItemType.LIGHTNING_GUN, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.SHOCK_RIFLE, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.MINIGUN, true);
-        weaponPrefs.addGeneralPref(UT2004ItemType.FLAK_CANNON, true);        
+        weaponPrefs.addGeneralPref(UT2004ItemType.FLAK_CANNON, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.ROCKET_LAUNCHER, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.LINK_GUN, true);
-        weaponPrefs.addGeneralPref(UT2004ItemType.ASSAULT_RIFLE, true);        
+        weaponPrefs.addGeneralPref(UT2004ItemType.ASSAULT_RIFLE, true);
         weaponPrefs.addGeneralPref(UT2004ItemType.BIO_RIFLE, true);
-        
+
         // Set the current state to Idle
         currentState = State.resetState();
-        
+
         // Set the parameter dead to false
         this.dead = false;
-        
+
         // Set beingDamaged to false
         this.beingDamaged = false;
-        
+
         // Set the number of frags to 0
         this.frags = 0;
-        
+
         // Connect to the server
         this.clientTCP = new ClientTCP(addressTCP, portTCP);
     }
@@ -356,10 +354,10 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     	// skill level affects how well will the bot aim
         // First of all, init the value of the idBot
         this.idBot = ++instanceCount;
-        
+
         // Insert a new key/value in the bots map
         BotDatas.bots.put("Hunter-" + String.valueOf(this.idBot), this);
-        
+
         return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5);
     }
 
@@ -373,12 +371,12 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         itemsToRunAround = null;
         currentState     = State.resetState();
     }
-    
+
     @EventListener(eventClass=PlayerDamaged.class)
     public void playerDamaged(PlayerDamaged event) {
     	log.info("I have just hurt other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
-    
+
     @EventListener(eventClass=BotDamaged.class)
     public void botDamaged(BotDamaged event) {
         this.beingDamaged = true;
@@ -392,39 +390,25 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      * is affected by visionTime variable, that can be adjusted in GameBots ini
      * file in UT2004/System folder.
      */
-    int t = 0;
     @Override
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void logic() {
         // Transition
         currentState = currentState.transition(this);
-        
-        /*t = (t + 15) % 16;
-        System.out.println("not null " + t + " " + (info.getLocation().x));
-        Rotation r = info.getRotation().setYaw(info.getRotation().getYaw() + t);
-        System.out.println(info.getLocation().x);
-        Location rot = new Rotation(1.0,1.0,1.0).toLocation();*/
-        //this.getMove().jump();
-        /*Location l = new Location(bot.getLocation().x + 20, bot.getLocation().y + 20);
-        this.getMove().moveTo(l);*/
-        // Yaw -> horizontal
-        // Pitch -> vertical
-        //this.getMove().turnHorizontal(t);
-        
-        
+
         // Act
         currentState.act(this);
-        
+
         // Lock the code
         locker.lock();
-        
+
         // Store values into database
         //currentState.insertStateValuesIntoDatabase(this);
         //this.clientTCP.sendMessage("[" + bot.getLocation().x + " " + bot.getLocation().y + "]");
-        
+
         // Update map
         BotDatas.bots.replace(this.getName().toString().split(" ")[0], this);
-        
+
         // Unlock the code
         locker.unlock();
     }
@@ -432,15 +416,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     ///////////////
     // STATE HIT //
     ///////////////
-    protected void stateHit() {
+    //protected void stateHit() {
         //log.info("Decision is: HIT");
-        bot.getBotName().setInfo("HIT");
-        if (navigation.isNavigating()) {
-        	navigation.stopNavigation();
-        	item = null;
-        }
-        getAct().act(new Rotate().setAmount(32000));
-    }
+//        bot.getBotName().setInfo("HIT");
+//        if (navigation.isNavigating()) {
+//        	navigation.stopNavigation();
+//        	item = null;
+//        }
+//        getAct().act(new Rotate().setAmount(32000));
+//    //}
 
     ////////////////////////////
     // STATE RUN AROUND ITEMS //
@@ -461,34 +445,34 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         BotProjetIAS.db = new Database();
         // Reset the database
         BotProjetIAS.db.resetDatabase();
-        
+
         // Instantiate the map
         BotDatas.bots = new HashMap<String, BotProjetIAS>();
-        
+
         // Create the locker
         locker = new ReentrantLock();
-        
+
         // Starts 4 Hunters at once
-        // Note that this is the most easy way to get a bunch 
-        // of (the same) bots running at the same time        
-    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(1);
+        // Note that this is the most easy way to get a bunch
+        // of (the same) bots running at the same time
+    	new UT2004BotRunner(BotProjetIAS.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
     }
-    
+
     // Static class to access private datas of each bot
     public static class BotDatas {
         // Static map
         public static Map<String, BotProjetIAS> bots;
     }
-    
+
     public class ClientTCP {
         /**
          * Socket which defined the connection to the server
          */
         Socket socket;
-        
+
         BufferedOutputStream  outToServer;
         BufferedReader inFromServer;
-        
+
         public ClientTCP(String address, int port) {
             try {
                 this.socket       = new Socket(address, port);
@@ -498,7 +482,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
                 e.printStackTrace();
             }
         }
-        
+
         public String sendMessage(String msg) {
             try {
                 // Write the datas in the buffer
@@ -509,7 +493,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
                 String response = this.inFromServer.readLine();
                 // Then print it
                 System.out.println("FROM SERVER: " + response);
-                
+
                 return response;
             } catch(IOException e) {
                 e.printStackTrace();

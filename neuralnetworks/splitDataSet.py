@@ -95,13 +95,13 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # TODO: set the two following values
-    propValid = 30 # TODO percentage of the samples for the validation data subset
-    propTest  = 20  # TODOpercentage of the samples for the test data subset
-    
+    propValid =  # TODO percentage of the samples for the validation data subset
+    propTest =   # TODOpercentage of the samples for the test data subset
+
     # Therefore, the percentage of the samples actually used for the training 
     # equals 100 - (propValid + propTest)
-    validTestProps = [propValid, propTest]
-    
+    validTestProps = [propValid,propTest]
+
     shuffle = True # statically safe
     splitData(learningDataPath, dataDir, validTestProps, shuffle)
 

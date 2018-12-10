@@ -4,7 +4,7 @@
 # description: train a MLP (Multilayer perceptron on the learning data
 # copyright (c) 2018 ENIB. All rights reserved.
 # ------------------------------------------------------------------------------
-# usage: python 
+# usage: python
 # dependencies: python 3 (see import statements)
 # tested on: python 3.6.5 on MacOS 10.13
 #            python 3.x on
@@ -13,7 +13,7 @@
 # revision: 22-sep-2018 pierre.chevaillier@enib.fr moved SurfaceData to a separate file
 # ------------------------------------------------------------------------------
 # comments:
-# - 
+# -
 # warnings:
 # - still under development - not fully tested
 # - only for educational purposes
@@ -54,7 +54,7 @@ from learningAnalyser import LearningAnalyser
 
 # ==============================================================================
 class MLPLearningExperiment(LearningExperiment):
-    
+
     def __init__(self):
         super().__init__()
         return
@@ -65,10 +65,10 @@ class MLPLearningExperiment(LearningExperiment):
         firstHiddenLayerDim = self.layers[0]
         if self.__class__.verbose > 0:
             print("First hidden layer: " + str(firstHiddenLayerDim) + " activation: " + self.hiddenLayersActivationFunction)
-        self.model.add(Dense(firstHiddenLayerDim, 
-            input_dim = self.learningData.X.dim, 
+        self.model.add(Dense(firstHiddenLayerDim,
+            input_dim = self.learningData.X.dim,
             activation = self.hiddenLayersActivationFunction))
-        
+
         # Dropout layer
         if self.dropout:
             self.model.add(Dropout(0.5))
@@ -77,13 +77,13 @@ class MLPLearningExperiment(LearningExperiment):
         hiddenLayerDims = self.layers[1:]
         for hiddenDim in hiddenLayerDims:
             if hiddenDim > 0:
-                self.model.add(Dense(hiddenDim, 
+                self.model.add(Dense(hiddenDim,
                     activation = self.hiddenLayersActivationFunction))
                 if self.__class__.verbose > 0:
                     print("Hidden layer: " + str(hiddenDim) + " activation: " + self.hiddenLayersActivationFunction)
-                        
+
         # Output layer
-        self.model.add(Dense(self.learningData.Y.dim, 
+        self.model.add(Dense(self.learningData.Y.dim,
             activation = self.outputLayerActivationFunction))
         if self.__class__.verbose > 0:
             print("Output layer: " + str(self.learningData.Y.dim) + " activation: " + self.outputLayerActivationFunction)
@@ -95,16 +95,16 @@ class MLPLearningExperiment(LearningExperiment):
             print("Compiling the model " + self.modelName + " ...")
             print("\t - optimizer : " + self.optimizer)
             print("\t - loss function : " + self.lossFunction)
-        
-        self.model.compile(optimizer = self.optimizer, 
-            loss = self.lossFunction, 
+
+        self.model.compile(optimizer = self.optimizer,
+            loss = self.lossFunction,
             metrics = ['accuracy'])
         return
 
     def learn(self, cbks):
-    
-        history = self.model.fit(self.learningData.X.trainValues, self.learningData.Y.trainValues, 
-            batch_size = self.batchSize, 
+
+        history = self.model.fit(self.learningData.X.trainValues, self.learningData.Y.trainValues,
+            batch_size = self.batchSize,
             epochs = self.nMaxEpochs,
             validation_data = (self.learningData.X.validValues, self.learningData.Y.validValues),
             callbacks = cbks,
@@ -112,10 +112,10 @@ class MLPLearningExperiment(LearningExperiment):
 
         self.history = history.history
 
-        # The training loss is the average of the losses over each batch of training data. 
-        # Because your model is changing over time, the loss over the first batches 
-        # of an epoch is generally higher than over the last batches. 
-        # On the other hand, the testing loss for an epoch is computed using the model 
+        # The training loss is the average of the losses over each batch of training data.
+        # Because your model is changing over time, the loss over the first batches
+        # of an epoch is generally higher than over the last batches.
+        # On the other hand, the testing loss for an epoch is computed using the model
         # as it is at the end of the epoch, resulting in a lower loss.
         # Regularization mechanisms, such as Dropout and L1/L2 weight regularization, are turned off at testing time.
         nEpochs = len(self.history['loss'])
@@ -124,7 +124,7 @@ class MLPLearningExperiment(LearningExperiment):
             validLoss = self.history['val_loss'][nEpochs-1]
             print("Loss on the training data subset: " + str(trainLoss))
             print("Loss on the validation data subset: " + str(validLoss))
-            
+
         testLoss, acc_test = self.model.evaluate(self.learningData.X.testValues, self.learningData.Y.testValues)
         print("Loss / test: " + str(testLoss) + " and accuracy: " + str(acc_test))
         return
@@ -146,13 +146,13 @@ class MLPLearningExperiment(LearningExperiment):
         # Input variables
         if self.hiddenLayersActivationFunction == 'sigmoid':
             self.learningData.X.scalingRanges = [[-4.0, 4.0],[-4.0, 4.0]]
-            # sigmoid: s(x) = 1 / (1+exp(x)) ; s(-4) = 0.017 ; s(4) = 0.982  
+            # sigmoid: s(x) = 1 / (1+exp(x)) ; s(-4) = 0.017 ; s(4) = 0.982
         elif self.hiddenLayersActivationFunction == "tanh":
             # tanh(-2.5) = -0,987 ; tanh(2.5) = 0.987
             self.learningData.X.scalingRanges = [[-4.0, 4.0],[-2.5, 2.5]]
         else:
             self.learningData.X.scalingRanges = [[-1.0, 1.0],[-1.0, 1.0]]
-        
+
         # Output variables
         if self.hiddenLayersActivationFunction == 'sigmoid':
             self.learningData.Y.scalingRanges = [[0.0, 1.0],[0.0, 1.0]]
@@ -189,24 +189,24 @@ class MLPLearningExperiment(LearningExperiment):
 
     def defineXValuesForPredictions(self, number):
         if self.learningData.X.isScaled:
-            X1 = np.linspace(self.learningData.X.scalingRanges[0][0], 
-                self.learningData.X.scalingRanges[0][1], 
-                num = number, 
+            X1 = np.linspace(self.learningData.X.scalingRanges[0][0],
+                self.learningData.X.scalingRanges[0][1],
+                num = number,
                 endpoint = True)
-            X2 = np.linspace(self.learningData.X.scalingRanges[1][0], 
-                self.learningData.X.scalingRanges[1][1], 
-                num = number, 
+            X2 = np.linspace(self.learningData.X.scalingRanges[1][0],
+                self.learningData.X.scalingRanges[1][1],
+                num = number,
                 endpoint = True)
         else:
-            X1 = np.linspace(self.learningData.X.domains[0][0], 
-                self.learningData.X.domains[0][1], 
-                num = number, 
+            X1 = np.linspace(self.learningData.X.domains[0][0],
+                self.learningData.X.domains[0][1],
+                num = number,
                 endpoint = True)
-            X2 = np.linspace(self.learningData.X.domains[1][0], 
-                self.learningData.X.domains[1][1], 
-                num = number, 
+            X2 = np.linspace(self.learningData.X.domains[1][0],
+                self.learningData.X.domains[1][1],
+                num = number,
                 endpoint = True)
-        
+
         X = np.vstack((X1,X2)).T
         return X
 
@@ -222,7 +222,7 @@ class MLPLearningExperiment(LearningExperiment):
         number = 50
         print("Compute the prediction using the trained network ...")
         X = self.defineXValuesForPredictions(number)
-   
+
         X1 = np.zeros([number, number])
         X2 = np.zeros([number, number])
         Y1 = np.zeros([number, number])
@@ -230,12 +230,12 @@ class MLPLearningExperiment(LearningExperiment):
 
         for i in range(number):
             for j in range(number):
-                X1[i,j], X2[i,j] = X[j,0], X[i,1]      
+                X1[i,j], X2[i,j] = X[j,0], X[i,1]
                 x = np.array([[ X1[i,j], X2[i,j]]])
                 y = self.model.predict(x)[0]
-                Y1[i,j], Y2[i,j] = y[0], y[1] 
+                Y1[i,j], Y2[i,j] = y[0], y[1]
 
-        # Plot Y1 <- (X1, X2)            
+        # Plot Y1 <- (X1, X2)
         fig = plt.figure()
         ax = Axes3D(fig)
         xLabels = self.learningData.X.axisLabels()
@@ -248,7 +248,7 @@ class MLPLearningExperiment(LearningExperiment):
         figFileName = self.defineModelFileBaseName() + "_" + plotName + ".png"
         plt.savefig(figFileName)
 
-        # Plot Y2 <- (X1, X2) 
+        # Plot Y2 <- (X1, X2)
         fig = plt.figure()
         ax = Axes3D(fig)
         xLabels = self.learningData.X.axisLabels()
@@ -267,22 +267,22 @@ class MLPLearningExperiment(LearningExperiment):
     # def makePredictions(self):
     #     nPoints = 3
     #     if self.learningData.X.isScaled:
-    #         X1 = np.linspace(self.learningData.X.scalingRanges[0][0], 
-    #             self.learningData.X.scalingRanges[0][1], 
-    #             num = nPoints, 
+    #         X1 = np.linspace(self.learningData.X.scalingRanges[0][0],
+    #             self.learningData.X.scalingRanges[0][1],
+    #             num = nPoints,
     #             endpoint = True)
-    #         X2 = np.linspace(self.learningData.X.scalingRanges[1][0], 
-    #             self.learningData.X.scalingRanges[1][1], 
-    #             num = nPoints, 
+    #         X2 = np.linspace(self.learningData.X.scalingRanges[1][0],
+    #             self.learningData.X.scalingRanges[1][1],
+    #             num = nPoints,
     #             endpoint = True)
     #     else:
-    #         X1 = np.linspace(self.learningData.X.domains[0][0], 
-    #             self.learningData.X.domains[0][1], 
-    #             num = nPoints, 
+    #         X1 = np.linspace(self.learningData.X.domains[0][0],
+    #             self.learningData.X.domains[0][1],
+    #             num = nPoints,
     #             endpoint = True)
-    #         X2 = np.linspace(self.learningData.X.domains[1][0], 
-    #             self.learningData.X.domains[1][1], 
-    #             num = nPoints, 
+    #         X2 = np.linspace(self.learningData.X.domains[1][0],
+    #             self.learningData.X.domains[1][1],
+    #             num = nPoints,
     #             endpoint = True)
     #     print(str(X1))
     #     print(str(X2))
@@ -296,13 +296,13 @@ class MLPLearningExperiment(LearningExperiment):
     #             Y[i, 2], Y[i, 3] = y[0], y[1]
     #             i += 1
     #     return Y
-    
+
     def savePredictions(self, XY):
         fName = self.resultsDirPath + os.path.sep \
             + self.modelName + '_' + self.timeStamp \
             + '_predictions.csv'
         np.savetxt(fName, XY, delimiter=';')
-        return 
+        return
 
 # Some functions
 
@@ -362,11 +362,11 @@ def performTrials(experiment, nTrials):
     while nTrials > 0:
         xp = MLPLearningExperiment()
         xp.copy(experiment)
-        
+
         learn(xp, analyser)
         xp.makeAndPlotPredictions()
-        
-        time.sleep(2) # to ensure different time stamps for each experiment 
+
+        time.sleep(2) # to ensure different time stamps for each experiment
         nTrials -= 1
 
     analyser.defineFileName()
@@ -382,7 +382,7 @@ def learn(experiment, analyser):
     if experiment.__class__.verbose > 0:
         print("Domains for X " + str(learningData.X.domains))
         print("Domains for Y " + str(learningData.Y.domains))
-        
+
     # --- Initializations
     currentExp = MLPLearningExperiment()
     currentExp.copy(experiment)
@@ -395,7 +395,7 @@ def learn(experiment, analyser):
     currentExp.defineScaling()
     currentExp.scaleLearningData()
     if experiment.__class__.verbose > 0:
-        currentExp.learningData.X.printStats()  
+        currentExp.learningData.X.printStats()
         currentExp.learningData.Y.printStats()
 
     # Creation of the neural network
@@ -412,7 +412,7 @@ def learn(experiment, analyser):
 
     currentExp.learn(callbacks)
     currentExp.plotLearningCurve()
-    
+
     # Save the trained model for further usage
     currentExp.saveModel()
 
@@ -432,7 +432,7 @@ if __name__ == "__main__":
  # Data
     # used to define the dimensions of the data (X,Y)
     #MJ : input ??? values,
-    data = LearningData(2, 2) 
+    data = LearningData(2, 2)
 
     # Where to read and write the different files
     if len(sys.argv) > 0:
@@ -444,7 +444,7 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
        data.dirPath = learningDataDir
-    
+
     if len(sys.argv) > 1:
         data.fileNamesPrefix = sys.argv[2]
     else:
@@ -461,7 +461,7 @@ if __name__ == "__main__":
 
     experimentParameters.hiddenLayersActivationFunction = 'sigmoid' # TODO set this value
     experimentParameters.outputLayerActivationFunction = 'linear' # TODO set this value
-    experimentParameters.lossFunction = 'mse' 
+    experimentParameters.lossFunction = 'mse'
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
