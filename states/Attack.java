@@ -18,7 +18,13 @@
 package com.etiennelndr.projetias.bot_pogamut.states;
 
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
+import com.google.inject.internal.Iterators;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+import cz.cuni.amis.pogamut.ut2004.bot.command.ImprovedShooting;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.StopShooting;
+import java.util.Map;
+import java.util.Random;
 
 /**
  *
@@ -113,5 +119,15 @@ public class Attack extends State {
         }
         
         bot.setItem(null);
+    }
+    public void changerArme(BotProjetIAS bot) {
+        // recupere une arme charge aléatoirement
+        Map<ItemType, Weapon> loadedWeapons = bot.getWeaponry().getLoadedWeapons();
+        //Object[] weaponsArray = loadedWeapons.keySet().toArray();
+        int n = (new Random().nextInt(loadedWeapons.size()));
+        // choix d'une arme au hasard 
+        //bloqué
+        ImprovedShooting changeWeapon = bot.getShoot().changeWeapon();
+        
     }
 }
