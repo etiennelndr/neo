@@ -43,7 +43,7 @@ class LearningExperiment:
 
         # Specific to neural networks
         self.layers = None
-        self.hiddenLayersActivationFunction = 'sigmoid'
+        self.hiddenLayersActivationFunctions = ['sigmoid']
         self.outputLayerActivationFunction = 'linear'
         self.dropout = False
         self.lossFunction = 'mse'
@@ -63,7 +63,7 @@ class LearningExperiment:
         self.model = origin.model
 
         self.layers = origin.layers
-        self.hiddenLayersActivationFunction = origin.hiddenLayersActivationFunction
+        self.hiddenLayersActivationFunctions = origin.hiddenLayersActivationFunctions
         self.outputLayerActivationFunction = origin.outputLayerActivationFunction
         self.dropout = origin.dropout
         self.lossFunction = origin.lossFunction

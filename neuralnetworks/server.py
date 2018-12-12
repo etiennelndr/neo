@@ -28,6 +28,18 @@ class Server():
         self.__state          = ""
         self.__mutex          = Lock()
 
+        # Uncomment for partial map
+        self.__maxX, self.__minX   = 2179.21, 1823.39
+        self.__maxY, self.__minY   = 585.48, -2458.07
+        self.__maxVx, self.__minVx = 439.92, -439.99
+        self.__maxVy, self.__minVy = 440.0, -449.52
+
+        # Uncomment for complete map
+        #self.__maxX, self.__minX   = 3092.38, 912.6
+        #self.__maxY, self.__minY   = 582.08, -2511.44
+        #self.__maxVx, self.__minVx = 449.94, -705.87
+        #self.__maxVy, self.__minVy = 449.57, 462.2
+
     # This method is the main method of the class Server
     def run(self):
         print("running")
@@ -93,9 +105,12 @@ class Server():
                     values = self.__splitData(req)
                     result = self.__processData(values)
                     self.__mutex.release()
-                    print(result[0], type(result[0]))
-                    client.send(bytes("[", "utf-8") + bytearray(struct.pack("f", result[0])) + bytes("]", "utf-8") + bytes("\n", "utf-8"))
-                    print("yolo")
+                    client.send(bytes("[", "utf-8") 
+                                + bytes(str(result[0]),"utf-8")
+                                + bytes(" ", "utf-8")
+                                + bytes(str(result[1]),"utf-8")
+                                + bytes("]", "utf-8")
+                                + bytes("\n", "utf-8")) # MUST NOT forget end of line
             except socket.error as error:
                 client.close()
                 break
@@ -105,18 +120,42 @@ class Server():
         
     def __processData(self, data):
         result = self.__behaviorController.process(data)
-        print(str(data) + ' --> ' + str(result))
-        return result
+        vx, vy = self.__transformOutputDatas(result[0], result[1])
+        print(str(data) + ' --> ' + str(vx) + ', ' + str(vy))
+        return [vx, vy]
     
     def __splitData(self, data):
         data = data.decode("utf-8")
         d = data.split("[")[1].split(']')[0]
         splitValues = d.split(" ")
 
-        values = [float(splitValues[0]), float(splitValues[1])]
+        # Normalize input datas
+        x, y = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1]))
+
+        values = [x, y]
         datas = np.array([values])
 
         return datas
+
+    def __normalizeInputDatas(self, x, y):
+        if x > self.__maxX:
+            x = self.__maxX
+        elif x < self.__minX:
+            x = self.__minX
+        nx = (x - self.__minX) / (self.__maxX - self.__minX)
+        
+        if y > self.__maxY:
+            y = self.__maxY
+        elif y < self.__minY:
+            y = self.__minY
+        ny = (y - self.__minY) / (self.__maxY - self.__minY)
+
+        return nx, ny
+
+    def __transformOutputDatas(self, vx, vy):
+        tvx = ((vx + 1)/2)*(self.__maxVx - self.__minVx) + self.__minVx
+        tvy = ((vy + 1)/2)*(self.__maxVy - self.__minVy) + self.__minVy
+        return tvx, tvy
 
     def __close(self):
         # Close the main socket

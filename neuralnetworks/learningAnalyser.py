@@ -88,7 +88,8 @@ class LearningAnalyser:
         params.append(xp.modelName)
         params.append(xp.layers.tolist())
         params += [xp.scaledX, xp.scaledY]
-        params.append(xp.hiddenLayersActivationFunction)
+        for hiddenLayer in xp.hiddenLayersActivationFunctions:
+            params.append(hiddenLayer)
         params.append(xp.outputLayerActivationFunction)
         params.append(xp.dropout)
         params.append(xp.lossFunction)

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import cz.cuni.amis.introspection.java.JProp;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
@@ -358,7 +359,8 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Insert a new key/value in the bots map
         BotDatas.bots.put("Hunter-" + String.valueOf(this.idBot), this);
 
-        return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5);
+        Location spawn = new Location(2028.45, 167.16);
+        return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn);
     }
 
     /**

@@ -18,6 +18,7 @@
 package com.etiennelndr.projetias.bot_pogamut.states;
 
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
@@ -79,14 +80,14 @@ public class Idle extends State {
 
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
-            //System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            //String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            //System.out.println(response);
-            bot.getLog().warning("NO ITEM TO RUN FOR!");
+            System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            System.out.println(response);
+            /*bot.getLog().warning("NO ITEM TO RUN FOR!");
             if (bot.getNavigation().isNavigating())
                 return;
             bot.getBot().getBotName().setInfo("RANDOM NAV");
-            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());
+            bot.getNavigation().navigate(bot.getNavPoints().getRandomNavPoint());*/
         } else {
             /*System.out.println("not null " + t + " " + bot.getBot().getRotation().getYaw() + t);
             t = (t + 15) % 16;
@@ -95,13 +96,23 @@ public class Idle extends State {
             System.out.println(bot.getBot().getRotation().getYaw());
             bot.getBot().getRotation().setRoll(t);
             bot.getBot().getRotation().setPitch(t);*/
-            //System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            //String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            //System.out.println(response);
-            bot.setItem(item);
+            System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            
+            String respSplit = response.split("\\[")[1].split("\\]")[0];
+            String[] values = respSplit.split(" ");
+            float vx = Float.parseFloat(values[0]);
+            float vy = Float.parseFloat(values[1]);
+            
+            // Create a location on the map
+            Location l = new Location(bot.getInfo().getLocation().x + vx, bot.getInfo().getLocation().y + vy);
+            bot.getBody().getLocomotion().moveTo(l);
+            
+            System.out.println(respSplit);
+            /*bot.setItem(item);
             bot.getLog().info("RUNNING FOR: " + item.getType().getName());
             bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
-            bot.getNavigation().navigate(item);
+            bot.getNavigation().navigate(item);*/
         }
     }
 }

@@ -58,7 +58,6 @@ class NeuralVelocityController:
         return
 
     def process(self, features):
-        print("in neuralController", features, type(features))
         return (self._model.predict(features))[0]
 
 def usage():
@@ -80,7 +79,7 @@ def unitaryTests():
     neuralController.configure(opts, args)
     neuralController.build()
 
-    feature = [2044.82, -350.42]
+    feature = [1500.15, -1000]
     sample = np.array([feature])
     print(str(neuralController.process(sample)))
 

@@ -65,10 +65,10 @@ class MLPLearningExperiment(LearningExperiment):
         # input layer and first hidden layer
         firstHiddenLayerDim = self.layers[0]
         if self.__class__.verbose > 0:
-            print("First hidden layer: " + str(firstHiddenLayerDim) + " activation: " + self.hiddenLayersActivationFunction)
+            print("First hidden layer: " + str(firstHiddenLayerDim) + " activation: " + self.hiddenLayersActivationFunctions[0])
         self.model.add(Dense(firstHiddenLayerDim,
             input_dim = self.learningData.X.dim,
-            activation = self.hiddenLayersActivationFunction))
+            activation = self.hiddenLayersActivationFunctions[0]))
 
         # Dropout layer
         if self.dropout:
@@ -76,12 +76,13 @@ class MLPLearningExperiment(LearningExperiment):
 
         # Other hidden layer(s), if any
         hiddenLayerDims = self.layers[1:]
-        for hiddenDim in hiddenLayerDims:
+        for i in range(len(hiddenLayerDims)):
+            hiddenDim = hiddenLayerDims[i]
             if hiddenDim > 0:
                 self.model.add(Dense(hiddenDim,
-                    activation = self.hiddenLayersActivationFunction))
+                    activation = self.hiddenLayersActivationFunctions[i+1]))
                 if self.__class__.verbose > 0:
-                    print("Hidden layer: " + str(hiddenDim) + " activation: " + self.hiddenLayersActivationFunction)
+                    print("Hidden layer: " + str(hiddenDim) + " activation: " + self.hiddenLayersActivationFunctions[i+1])
 
         # Output layer
         self.model.add(Dense(self.learningData.Y.dim,
@@ -147,17 +148,17 @@ class MLPLearningExperiment(LearningExperiment):
 
     def defineScaling(self):
         # Input variables
-        if self.hiddenLayersActivationFunction == 'sigmoid':
+        if self.hiddenLayersActivationFunctions[0] == 'sigmoid':
             self.learningData.X.scalingRanges = [[-4.0, 4.0],[-4.0, 4.0]]
             # sigmoid: s(x) = 1 / (1+exp(x)) ; s(-4) = 0.017 ; s(4) = 0.982
-        elif self.hiddenLayersActivationFunction == "tanh":
+        elif self.hiddenLayersActivationFunctions[0] == "tanh":
             # tanh(-2.5) = -0,987 ; tanh(2.5) = 0.987
             self.learningData.X.scalingRanges = [[-4.0, 4.0],[-2.5, 2.5]]
         else:
             self.learningData.X.scalingRanges = [[-1.0, 1.0],[-1.0, 1.0]]
 
         # Output variables
-        if self.hiddenLayersActivationFunction == 'sigmoid':
+        if self.hiddenLayersActivationFunctions[0] == 'sigmoid':
             self.learningData.Y.scalingRanges = [[0.0, 1.0],[0.0, 1.0]]
         else:
              self.learningData.Y.scalingRanges = [[-1.0, 1.0],[-1.0, 1.0]]
@@ -375,7 +376,8 @@ if __name__ == "__main__":
     # Data
     # used to define the dimensions of the data (X,Y)
     #MJ : input ??? values,
-    data = LearningData(2, 4)
+    #data = LearningData(2, 4)
+    data = LearningData(2, 2)
 
     # Where to read and write the different files
     if len(sys.argv) > 0:
@@ -402,16 +404,21 @@ if __name__ == "__main__":
 
     experimentParameters.learningData = data
 
-    experimentParameters.hiddenLayersActivationFunction = 'sigmoid' # TODO set this value
+    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid'] # TODO set this value
     experimentParameters.outputLayerActivationFunction = 'tanh' # TODO set this value
     experimentParameters.lossFunction = 'mse'
+    #experimentParameters.lossFunction = 'categorical_crossentropy'
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
-    experimentParameters.layers = np.array([2,6,2,4]) # TODO define here the configuration of the network
-    experimentParameters.nMaxEpochs = 10000 # TODO set this value
+    experimentParameters.layers = np.array([2,8,4]) # TODO define here the configuration of the network
+    experimentParameters.nMaxEpochs = 1000 # TODO set this value
 
     LearningExperiment.verbose = 1
+
+    if (len(experimentParameters.hiddenLayersActivationFunctions) != len(experimentParameters.layers)):
+        print("Error: number of layers and number of activation functions is different.")
+        sys.exit(2)
 
     # Launch the learning
     learn(experimentParameters, LearningAnalyser())
