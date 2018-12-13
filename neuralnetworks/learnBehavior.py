@@ -362,7 +362,7 @@ def learn(experiment, analyser):
     currentExp.saveModel()
 
     # Output the predictions
-    currentExp.makeAndPlotPredictions()
+    #currentExp.makeAndPlotPredictions()
 
     # Collect some data on the current learning experiment
     if analyser:
@@ -372,14 +372,13 @@ def learn(experiment, analyser):
     return
 
 if __name__ == "__main__":
-
     # Data
     # used to define the dimensions of the data (X,Y)
     #MJ : input ??? values,
     #data = LearningData(2, 4)
-    data = LearningData(2, 2)
+    data = LearningData(3, 2)
 
-    # Where to read and write the different files
+    # Where to read and write the different file
     if len(sys.argv) > 0:
         learningDataDir = sys.argv[1]
     else:
@@ -404,14 +403,14 @@ if __name__ == "__main__":
 
     experimentParameters.learningData = data
 
-    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid'] # TODO set this value
+    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid'] # TODO set this value
     experimentParameters.outputLayerActivationFunction = 'tanh' # TODO set this value
     experimentParameters.lossFunction = 'mse'
     #experimentParameters.lossFunction = 'categorical_crossentropy'
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
-    experimentParameters.layers = np.array([2,8,4]) # TODO define here the configuration of the network
+    experimentParameters.layers = np.array([12,18,12,16,10]) # TODO define here the configuration of the network
     experimentParameters.nMaxEpochs = 1000 # TODO set this value
 
     LearningExperiment.verbose = 1

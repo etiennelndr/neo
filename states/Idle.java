@@ -80,9 +80,22 @@ public class Idle extends State {
 
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
-            System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            System.out.println(response);
+            String request = "[" + String.valueOf(bot.getBot().getLocation().x) 
+                    + " " + String.valueOf(bot.getBot().getLocation().y) 
+                    + " " + String.valueOf(bot.getBot().getRotation().yaw) + "]";
+            System.out.println(request); 
+            String response = bot.getClientTCP().sendMessage(request);
+            
+            String respSplit = response.split("\\[")[1].split("\\]")[0];
+            String[] values = respSplit.split(" ");
+            float vx = Float.parseFloat(values[0]);
+            float vy = Float.parseFloat(values[1]);
+            
+            // Create a location on the map
+            Location l = new Location(bot.getInfo().getLocation().x + vx, bot.getInfo().getLocation().y + vy);
+            bot.getBody().getLocomotion().moveTo(l);
+            
+            System.out.println(respSplit);
             /*bot.getLog().warning("NO ITEM TO RUN FOR!");
             if (bot.getNavigation().isNavigating())
                 return;
@@ -96,8 +109,11 @@ public class Idle extends State {
             System.out.println(bot.getBot().getRotation().getYaw());
             bot.getBot().getRotation().setRoll(t);
             bot.getBot().getRotation().setPitch(t);*/
-            System.out.println("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
-            String response = bot.getClientTCP().sendMessage("[" + bot.getBot().getLocation().x + " " + bot.getBot().getLocation().y + "]");
+            String request = "[" + String.valueOf(bot.getBot().getLocation().x) 
+                    + " " + String.valueOf(bot.getBot().getLocation().y) 
+                    + " " + String.valueOf(bot.getBot().getRotation().yaw) + "]";
+            System.out.println(request);
+            String response = bot.getClientTCP().sendMessage(request);
             
             String respSplit = response.split("\\[")[1].split("\\]")[0];
             String[] values = respSplit.split(" ");

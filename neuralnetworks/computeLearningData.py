@@ -21,15 +21,17 @@ def prepareLearningData(rawDataPath, learningDataPath):
     yFrame     = pandas.read_csv(rawDataPath, usecols=[1], sep=';')
     vxFrame    = pandas.read_csv(rawDataPath, usecols=[2], sep=";")
     vyFrame    = pandas.read_csv(rawDataPath, usecols=[3], sep=';')
-    #pitchFrame = pandas.read_csv(rawDataPath, usecols=[4], sep=';')
-    #yawFrame   = pandas.read_csv(rawDataPath, usecols=[6], sep=';')
+    #vzFrame   = pandas.read_csv(rawDataPath, usecols=[4], sep=';')
+    #pitchFrame = pandas.read_csv(rawDataPath, usecols=[5], sep=';')
+    #rollFrame  = pandas.read_csv(rawDataPath, usecols=[6], sep=';')
+    yawFrame   = pandas.read_csv(rawDataPath, usecols=[7], sep=';')
 
     x     = xFrame.values
     y     = yFrame.values
     vx    = vxFrame.values
     vy    = vyFrame.values
     #pitch = pitchFrame.values
-    #yaw = yawFrame.values
+    yaw = yawFrame.values
 
     nRecords = x.shape[0]
 
@@ -37,18 +39,22 @@ def prepareLearningData(rawDataPath, learningDataPath):
 
     targetFile = open(learningDataPath, "w")
 
-    xMax, xMin   = max(x), min(x)
-    yMax, yMin   = max(y), min(y)
-    vxMax, vxMin = max(vx), min(vx)
-    vyMax, vyMin = max(vy), min(vy)
+    xMax, xMin     = max(x), min(x)
+    yMax, yMin     = max(y), min(y)
+    vxMax, vxMin   = max(vx), min(vx)
+    vyMax, vyMin   = max(vy), min(vy)
+    yawMax, yawMin = max(yaw), min(yaw)
     # Maybe some changes
     for i in range(nRecords):
+        # Inputs
         # X
         _x = (x[i][0] - xMin) / (xMax - xMin)
-
         # Y
         _y = (y[i][0] - yMin) / (yMax - yMin)
+        # Yaw
+        _yaw = (yaw[i][0] - yawMin) / (yawMax - yawMin)
 
+        # Outputs
         # Vx
         _vx = ((vx[i][0] - vxMin) / (vxMax - vxMin))*2 - 1
 
@@ -57,15 +63,18 @@ def prepareLearningData(rawDataPath, learningDataPath):
 
         # For the moment we have nothing to transform
         targetFile.write(str(_x[0])
-                + ";" + str(_y[0]) + ";" + str(_vx[0])
+                + ";" + str(_y[0])
+                + ";" + str(_yaw[0])
+                + ";" + str(_vx[0])
                 + ";" + str(_vy[0]) #+ ";" + str(pitch[i][0])
                 #+ ";" + str(yaw[i][0])
                 + "\n")
 
-    print(max(x), min(x))
-    print(max(y), min(y))
-    print(max(vx), min(vx))
-    print(max(vy), min(vy))
+    print(xMax, xMin)
+    print(yMax, yMin)
+    print(yawMax, yawMin)
+    print(vxMax, vxMin)
+    print(vyMax, vyMin)
 
     targetFile.close()
     return
