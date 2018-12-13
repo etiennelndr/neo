@@ -7,6 +7,7 @@
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
 
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import java.awt.Point;
 //import maze.*;
 
@@ -21,45 +22,37 @@ import java.awt.Point;
  */
 public class PositionLearnerPerception extends Perception {
 	
-	private Point _position;
-//	private maze.SituatedAgent _myAgent;
-	 
-//	public PositionLearnerPerception(){
-//		_position = new Point();
-//		_position = a.getPosition();
-//		setAgent(a);
-//	}
-        
-        public PositionLearnerPerception(){
-		
+	private Weapon _weapon;
+
+        public PositionLearnerPerception(){	
 	}
 	
-	public PositionLearnerPerception(PositionLearnerPerception p){
-		_position = new Point(p._position);
-		setAgent(p.getAgent());
-	}
+//	public PositionLearnerPerception(PositionLearnerPerception p){
+//		_position = new Point(p._position);
+//		setAgent(p.getAgent());
+//	}
         
         public PositionLearnerPerception copy(){
             PositionLearnerPerception plp = new PositionLearnerPerception();
-            plp._position = new Point(_position);
-	    plp.setAgent(getAgent());
+            plp.setAgent(getAgent());
             return plp;
         }
 	
 	public void updatePerception(){
                 
-		_position = getAgent().getPosition();
+		_weapon = getAgent().getWeapon();
 	}
 	public boolean equals(Perception s){
-		return(((PositionLearnerPerception)(s))._position.getX()==_position.getX()&&(((PositionLearnerPerception)(s))._position.getY()==_position.getY()));
+		//return(((PositionLearnerPerception)(s))._position.getX()==_position.getX()&&(((PositionLearnerPerception)(s))._position.getY()==_position.getY()));
+                return ((PositionLearnerPerception)(s))._weapon==_weapon;
 	}
-	public Point getPosition(){
-		return  _position;
+	public Weapon getPosition(){
+		return  _weapon;
 	}
 	
 	
 	public void display(){
-		System.out.println("Etat : "+String.valueOf(_position.getX())+" "+String.valueOf(_position.getY()));
+		//System.out.println("Etat : "+String.valueOf(_position.getX())+" "+String.valueOf(_position.getY()));
 	}
 }
 

@@ -4,9 +4,10 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package learning;
+package com.etiennelndr.projetias.bot_pogamut.reinforcement;
      
 import com.etiennelndr.projetias.bot_pogamut.reinforcement.Perception;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 
 /**
  * @author deloor
@@ -20,10 +21,10 @@ import com.etiennelndr.projetias.bot_pogamut.reinforcement.Perception;
  */
 public class MemoryPattern {
 	private Perception _perception;
-	private String _action;
+	private Weapon _action;
 	private float _qualitie;
 	
-	public MemoryPattern(Perception state, float qualitie, String action){
+	public MemoryPattern(Perception state, float qualitie, Weapon action){
             //System.out.println("Construction d'un memory Pattern avec une Perception de type " + state.getClass().getName());
 	   /* Class<?> classPerception = null;
                 try {
@@ -47,7 +48,7 @@ public class MemoryPattern {
 	
 	public Perception getPerception(){return _perception;}
 	public float getQualitie(){return _qualitie;}
-	public String getAction(){return _action;}
+	public Weapon getAction(){return _action;}
 	public void setQualitie(float q){_qualitie=q;}
 	
 }

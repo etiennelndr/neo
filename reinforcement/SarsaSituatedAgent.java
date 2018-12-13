@@ -10,8 +10,13 @@ package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
 
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -26,7 +31,7 @@ public class SarsaSituatedAgent extends SituatedAgent {
 	private float _bestQuality = 10;
 	private Perception _S;
 	private Perception _SP;
-	private String _AP;
+	private Weapon _weaponP;
 	private float _alpha = (float)0.5;
 	private float _lambda = (float)0.5;
 	private float _epsilon = (float)0.5;
@@ -45,10 +50,10 @@ public class SarsaSituatedAgent extends SituatedAgent {
         private ArrayList _trace;
         
         // thread 
-        private Thread _myThread;
-        private boolean running;
+       // private Thread _myThread;
+       // private boolean running;
         
-        private boolean selected;
+      //  private boolean selected;
 
         //private String _name;     // son nom, id
 	//Lprivate boolean _onAppli = false; //visible sur l'interface
@@ -64,8 +69,8 @@ public class SarsaSituatedAgent extends SituatedAgent {
                   
 	}
 	
-	public void init(){
-		super.init();
+	public void init(BotProjetIAS bot){
+		super.init(bot);
                  Class<?> classPerception = null;
                 try {
                     classPerception = Class.forName(_perceptionClass);
@@ -93,26 +98,26 @@ public class SarsaSituatedAgent extends SituatedAgent {
     
     
     
-         public void startLife() {
+         public void startLife(BotProjetIAS bot) {
             // Point p = new Point();
             //p = _maze.findAPositionFreeRandomly();
             // Random generator = new Random();
              _compteurByEpisode =0;
              _nStepTemp=0;
              _nbEpisode=0;
-             init();
+             init(bot);
          }
 
 
 
-        public void oneStep() {
+        public void oneStep(BotProjetIAS bot) {
             if(_nStepTemp<_nbStep)
             {
                 //if(isSelected())
                 //   _view.eraseMe(this);
                // if(_application.getSimulationStatut()=="run")
                 {
-                    sarsaAlgorithmeStep();
+                    sarsaAlgorithmeStep(bot);
                     _nStepTemp++;
                     _nbStepTotal++;
                     // Reward de 10 == recompense == gagné == changement de position
@@ -122,7 +127,7 @@ public class SarsaSituatedAgent extends SituatedAgent {
                         _trace.add(p);
                         linearizeTrace(2000);
                         _nStepTemp =0;
-                        init();
+                        init(bot);
                         _nbEpisode++;
                         _R = 0;
                         //Thread.yield();
@@ -142,10 +147,8 @@ public class SarsaSituatedAgent extends SituatedAgent {
         }
          
         
-        private void computeAutoEpsilon()
-        {
-           
-        }
+       
+       
          
         /**
           * Pour ne pas saturer la mémoire, cette méthode réduit lengthnombre de points de la trace
@@ -243,18 +246,14 @@ public class SarsaSituatedAgent extends SituatedAgent {
     public void clearTrace() { _trace.clear(); }
     
     public void createNewMemoryWith(Perception perception){
-    	String action;
-        //System.out.println("Appel de createNewMemory avec un argument de type " + perception.getClass().getName());
-             
-    	Perception copyState = perception.copy();
-          
-                
+        Weapon weapon;
+        Object[] listWeapon = _possibleActions.values().toArray();
     	for(int i=0; i<_possibleActions.size();i++){
-    		action = (String) _possibleActions.get(i);	
-    		float quality = _randomGenerator.nextFloat()*10;
-    	    MemoryPattern mp = new MemoryPattern(perception, quality, action);
-    	    _memory.add(mp);
-    	}	
+            weapon = (Weapon)listWeapon[i];
+            float quality = new Random().nextFloat()*10;
+    	    MemoryPattern mp = new MemoryPattern(perception, quality, weapon);
+   	    _memory.add(mp);
+   	}	
     }
     
     public void displayMemory(){
@@ -289,11 +288,11 @@ public class SarsaSituatedAgent extends SituatedAgent {
     }
     
     public void learn(){ 	
-    	float QSA = getQSA(_S,_A);
-    	float QSAPrime = getQSA(_SP, _AP);
+    	float QSA = getQSA(_S,_weapons);
+    	float QSAPrime = getQSA(_SP, _weaponP);
     	float newQSA=QSA+_alpha*(_R+_lambda*QSAPrime-QSA);
     	if (newQSA >_bestQuality){_bestQuality=newQSA;}
-    	setQSA(_S,_A,newQSA);
+    	setQSA(_S,_weapons,newQSA);
         Class<?> classPerception = null;
         try {
             classPerception = Class.forName(_perceptionClass);
@@ -308,26 +307,26 @@ public class SarsaSituatedAgent extends SituatedAgent {
             ex.printStackTrace();
         }
     	_S= _SP.copy();
-    	_A= new String(_AP);  	
+    	_weapons= (_weaponP);  	
     }
     
-    public void sarsaAlgorithmeStep(){
-    	runAction();
-    	chooseAPAction();
+    public void sarsaAlgorithmeStep(BotProjetIAS bot){
+    	runAction(bot);
+    	chooseAPAction(bot);
 	learn();          
     }
     
     private void printSarsaState(){
-    	System.out.println("Sarsa state");
-    	_S.display();
-    	System.out.println(_A);
-    	_SP.display();
-    	System.out.println(_AP);
+//    	System.out.println("Sarsa state");
+//    	_S.display();
+//    	System.out.println(_A);
+//    	_SP.display();
+//    	System.out.println(_AP);
     	
     }
     
     
-    private void setQSA(Perception state, String action, float value)
+    private void setQSA(Perception state, Weapon action, float value)
     {
     	for(int i=0; i<_memory.size(); i++){
     		MemoryPattern mp = (MemoryPattern)_memory.get(i);
@@ -339,7 +338,7 @@ public class SarsaSituatedAgent extends SituatedAgent {
     	}
     }
     
-    private float getQSA(Perception perception, String action  ){
+    private float getQSA(Perception perception, Weapon action  ){
     	float value=0;
     	for(int i=0;i<getMemory().size();i++){
     		MemoryPattern mp = (MemoryPattern)getMemory().get(i);
@@ -351,12 +350,11 @@ public class SarsaSituatedAgent extends SituatedAgent {
     	return value;
     }
     
-    public void chooseAPAction(){
-    	//Exploration ou exploitation
-    	
-    	float choose = _randomGenerator.nextFloat();
+    public void chooseAPAction(BotProjetIAS bot){
+    	//Exploration ou exploitation with ratio
+    	float choose = bot.getStats().getKilledOthers()/bot.getStats().getDeaths();
     	if(choose<_epsilon){
-    		chooseAPActionRandomly();
+    		chooseAPActionRandomly(bot);
     		} //exploration
     	
     	else {
@@ -364,29 +362,43 @@ public class SarsaSituatedAgent extends SituatedAgent {
     		} //exploitation ;	;	
     }
     
-    public void chooseAPActionRandomly(){
-    	
-    	int action = _randomGenerator.nextInt(_possibleActions.size());
-    	_AP = (String)_possibleActions.get(action);
-    	//System.out.println("Random = "+String.valueOf(action));
+    public void chooseAPActionRandomly(BotProjetIAS bot){
+    	  
+        // recupere une arme charge aléatoirement
+        Map<ItemType, Weapon> loadedWeapons = bot.getWeaponry().getLoadedWeapons();
+        //Object[] weaponsArray = loadedWeapons.keySet().toArray();
+        int n = (new Random().nextInt(loadedWeapons.size()));
+        // choix d'une arme au hasard
+        
+        Collection<Weapon> collectionWeapons = loadedWeapons.values();
+        Iterator<Weapon> itWeapon = collectionWeapons.iterator();
+        Weapon armeSelected = bot.getWeaponry().getCurrentWeapon();
+        for(int i= 0; i<n; i++)
+        {
+        armeSelected = itWeapon.next();
+        }
+        bot.getShoot().changeWeapon(armeSelected);    
+        
+        // a essayer 
     }
     
-    public void chooseAPGreedyAction(){
+    public void chooseAPGreedyAction(){             // to change 
+        
     	float q = -100;  
     	for(int i =0; i<_memory.size();i++){
     		MemoryPattern mp = (MemoryPattern)_memory.get(i);
     		if(mp.getPerception().equals(_SP)){
     			if(q<mp.getQualitie()){
     				q=mp.getQualitie();
-    				_AP=mp.getAction();
+    				_weapons=mp.getAction();
     			}
     		}
     		
     	} 	
     }
     
-    public void runAction(){
-    	super.runAction();
+    public void runAction(BotProjetIAS bot){
+    	super.runAction(bot);
          Class<?> classPerception = null;
                 try {
                     classPerception = Class.forName(_perceptionClass);
@@ -411,7 +423,7 @@ public class SarsaSituatedAgent extends SituatedAgent {
     
     
     //public String getName(){return _name;}
-    public void setSelected(){ selected = true;}
-    public void setUnSelected(){ selected = false;}
+   // public void setSelected(){ selected = true;}
+    //public void setUnSelected(){ selected = false;}
     //public boolean isSelected(){return selected;}
 }

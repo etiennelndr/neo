@@ -6,13 +6,13 @@
  */
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Random;
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
-
-
-
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 
 
 
@@ -26,28 +26,16 @@ import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
  */
 
 public class SituatedAgent {
-	protected Point _position;
-	protected Random _randomGenerator;
-	protected ArrayList _possibleActions;
+	protected  Map<ItemType, Weapon> _possibleActions;
 	private PositionLearnerPerception _myPerception;
 	/**
-	 * _A est l'action courante a executer
+	 * _A est l'arme choisi
 	 */
-	protected String _A;
-	protected int _R = 0; // trouver la correspondance
-	/**
-	 * Ce constructeur defini les actions possibles de l'agent
-	 * (ici 4) c'est certainement a revoir
-	 * @param m Est le labyrinthe (Maze) dans lequel
-	 * se promene le SituatedAgent
-	 * Il est egalement dote d'une perception PositionLearnerPerception
-	 * Si tout va bien et que l'on change la perception en respectant 
-	 * l'interface Perception, ca devrait toujours tourner.
-	 */
+	protected Weapon _weapons;
+	protected int _R = 0; // nombre de kill avec l'arme
+
 	public SituatedAgent(BotProjetIAS bot){
-		_position = new Point(1,1);	
-		_randomGenerator = new Random();
-		_possibleActions = new ArrayList();
+                _possibleActions = bot.getWeaponry().getLoadedWeapons(); //possible action arme chargé
 		_myPerception = new PositionLearnerPerception();
                        // PositionLearnerPerception(this);
 	/**
@@ -55,37 +43,23 @@ public class SituatedAgent {
 	 * Peut-etre faire une classe intermediaire
 	 */	
         }
-
 	
-	public Point getPosition(){
-		return _position;
+	public Weapon getWeapon(){
+		return _weapons;
 	}	
-	public void setPosition(Point p){_position=p;}
-	public ArrayList getPossibleActions(){
-    	return(_possibleActions);
-    }
-	public void init(){
-		//Point p = _maze.findAPositionFreeRandomly();
-    	//setPosition(p);
+        
+//	public Map<ItemType, Weapon> getPossibleActions(){
+//    	return(_possibleActions);} 
+    
+	public void init(BotProjetIAS bot){
     	_myPerception.updatePerception();
-    	_A=(String)(_possibleActions.get(_randomGenerator.nextInt(_possibleActions.size())));	
+        //init avec l'arme en cours
+    	_weapons=bot.getWeaponry().getCurrentWeapon();	
     }
     
-	public void runAction(){
-	
-    	
-//    	Brick b=_maze.returnTheBrickHere(newPosition);
-//    	_R=0;
-//		if(b!=(Brick)null)
-//			_R = b.getValue();
-//		
-//		// les murs rewards -1
-//		if(_R!=-1){
-//			_position = newPosition;	
-//		}
-//		_myPerception.updatePerception();
-        // maybe 
+	public void runAction(BotProjetIAS bot){
+                bot.getShoot().changeWeapon(_weapons);
+		_myPerception.updatePerception();
 	}
 	
-
 }
