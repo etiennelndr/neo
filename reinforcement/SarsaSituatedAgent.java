@@ -6,9 +6,6 @@
  */
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
-
-
-
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 import java.awt.Point;
 import java.util.ArrayList;

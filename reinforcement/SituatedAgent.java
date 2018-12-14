@@ -11,11 +11,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 
-
-
-
-
-
 /**
  * 
  * La classe Situated Agent permet de faire se promener un Agent dans un Labyrinte

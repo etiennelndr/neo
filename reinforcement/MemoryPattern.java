@@ -4,9 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package learning;
-     
-import com.etiennelndr.projetias.bot_pogamut.reinforcement.Perception;
+package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
 /**
  * @author deloor
