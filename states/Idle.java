@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.etiennelndr.projetias.bot_pogamut.states;
 
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
@@ -81,15 +80,15 @@ public class Idle extends State {
         Item item = MyCollections.getRandom(bot.getTabooItems().filter(interesting));
         if (item == null) {
             String request = "[" + String.valueOf(bot.getBot().getLocation().x) 
-                    + " " + String.valueOf(bot.getBot().getLocation().y) 
+                    + " " + String.valueOf(bot.getBot().getLocation().y)
                     + " " + String.valueOf(bot.getBot().getRotation().yaw) + "]";
-            System.out.println(request); 
+            System.out.println(request);
             String response = bot.getClientTCP().sendMessage(request);
             
             String respSplit = response.split("\\[")[1].split("\\]")[0];
             String[] values = respSplit.split(" ");
-            float vx = Float.parseFloat(values[0]);
-            float vy = Float.parseFloat(values[1]);
+            float vx = Float.parseFloat(values[0])/2;
+            float vy = Float.parseFloat(values[1])/2;
             
             // Create a location on the map
             Location l = new Location(bot.getInfo().getLocation().x + vx, bot.getInfo().getLocation().y + vy);
