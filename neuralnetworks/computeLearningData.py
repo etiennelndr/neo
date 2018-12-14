@@ -19,19 +19,20 @@ def prepareLearningData(rawDataPath, learningDataPath):
     print("Load the data set (raw formatting) from " + rawDataPath)
     xFrame     = pandas.read_csv(rawDataPath, usecols=[0], sep=';')
     yFrame     = pandas.read_csv(rawDataPath, usecols=[1], sep=';')
-    vxFrame    = pandas.read_csv(rawDataPath, usecols=[2], sep=";")
-    vyFrame    = pandas.read_csv(rawDataPath, usecols=[3], sep=';')
-    #vzFrame   = pandas.read_csv(rawDataPath, usecols=[4], sep=';')
+    vxFrame    = pandas.read_csv(rawDataPath, usecols=[8], sep=";")
+    vyFrame    = pandas.read_csv(rawDataPath, usecols=[9], sep=';')
+    vzFrame    = pandas.read_csv(rawDataPath, usecols=[10], sep=';')
     #pitchFrame = pandas.read_csv(rawDataPath, usecols=[5], sep=';')
     #rollFrame  = pandas.read_csv(rawDataPath, usecols=[6], sep=';')
-    yawFrame   = pandas.read_csv(rawDataPath, usecols=[7], sep=';')
+    #yawFrame   = pandas.read_csv(rawDataPath, usecols=[7], sep=';')
 
     x     = xFrame.values
     y     = yFrame.values
     vx    = vxFrame.values
     vy    = vyFrame.values
+    vz    = vzFrame.values
     #pitch = pitchFrame.values
-    yaw = yawFrame.values
+    #yaw   = yawFrame.values
 
     nRecords = x.shape[0]
 
@@ -43,7 +44,8 @@ def prepareLearningData(rawDataPath, learningDataPath):
     yMax, yMin     = max(y), min(y)
     vxMax, vxMin   = max(vx), min(vx)
     vyMax, vyMin   = max(vy), min(vy)
-    yawMax, yawMin = max(yaw), min(yaw)
+    vzMax, vzMin   = max(vz), min(vz)
+    #yawMax, yawMin = max(yaw), min(yaw)
     # Maybe some changes
     for i in range(nRecords):
         # Inputs
@@ -52,29 +54,31 @@ def prepareLearningData(rawDataPath, learningDataPath):
         # Y
         _y = (y[i][0] - yMin) / (yMax - yMin)
         # Yaw
-        _yaw = (yaw[i][0] - yawMin) / (yawMax - yawMin)
+        #_yaw = (yaw[i][0] - yawMin) / (yawMax - yawMin)
 
         # Outputs
         # Vx
         _vx = ((vx[i][0] - vxMin) / (vxMax - vxMin))*2 - 1
-
         # Vy
         _vy = ((vy[i][0] - vyMin) / (vyMax - vyMin))*2 - 1
+        # Vz 
+        _vz = ((vz[i][0] - vzMin) / (vzMax - vzMin))*2 - 1
 
         # For the moment we have nothing to transform
         targetFile.write(str(_x[0])
                 + ";" + str(_y[0])
-                + ";" + str(_yaw[0])
+                #+ ";" + str(_yaw[0])
                 + ";" + str(_vx[0])
                 + ";" + str(_vy[0]) #+ ";" + str(pitch[i][0])
-                #+ ";" + str(yaw[i][0])
+                + ";" + str(_vz[0])
                 + "\n")
 
     print(xMax, xMin)
     print(yMax, yMin)
-    print(yawMax, yawMin)
+    #print(yawMax, yawMin)
     print(vxMax, vxMin)
     print(vyMax, vyMin)
+    print(vzMax, vzMin)
 
     targetFile.close()
     return

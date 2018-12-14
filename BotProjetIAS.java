@@ -359,7 +359,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         BotDatas.bots.put("Hunter-" + String.valueOf(this.idBot), this);
 
         Location spawn = new Location(1326.04, -567.77);
-        Rotation rotation = new Rotation(0, 35000, 0);
+        Rotation rotation = new Rotation(0, 64300, 0);
         return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn).setRotation(rotation);
     }
 

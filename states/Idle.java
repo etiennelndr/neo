@@ -87,12 +87,16 @@ public class Idle extends State {
             
             String respSplit = response.split("\\[")[1].split("\\]")[0];
             String[] values = respSplit.split(" ");
-            float vx = Float.parseFloat(values[0])/2;
-            float vy = Float.parseFloat(values[1])/2;
+            float vx = Float.parseFloat(values[0])/4;
+            float vy = Float.parseFloat(values[1])/4;
             
             // Create a location on the map
             Location l = new Location(bot.getInfo().getLocation().x + vx, bot.getInfo().getLocation().y + vy);
             bot.getBody().getLocomotion().moveTo(l);
+            
+            // Try to jump
+            if (Float.parseFloat(values[2]) > 150)
+                bot.getBody().getLocomotion().jump();
             
             System.out.println(respSplit);
             /*bot.getLog().warning("NO ITEM TO RUN FOR!");
@@ -116,12 +120,16 @@ public class Idle extends State {
             
             String respSplit = response.split("\\[")[1].split("\\]")[0];
             String[] values = respSplit.split(" ");
-            float vx = Float.parseFloat(values[0]);
-            float vy = Float.parseFloat(values[1]);
+            float vx = Float.parseFloat(values[0])/4;
+            float vy = Float.parseFloat(values[1])/4;
             
             // Create a location on the map
             Location l = new Location(bot.getInfo().getLocation().x + vx, bot.getInfo().getLocation().y + vy);
             bot.getBody().getLocomotion().moveTo(l);
+            
+            // Try to jump
+            if (Float.parseFloat(values[2]) > 150)
+                bot.getBody().getLocomotion().jump();
             
             System.out.println(respSplit);
             /*bot.setItem(item);
