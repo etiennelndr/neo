@@ -6,9 +6,6 @@
  */
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
-
-
-
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;

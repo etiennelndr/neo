@@ -10,6 +10,7 @@ import cz.cuni.amis.introspection.java.JProp;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Rotation;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weaponry;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Players;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
@@ -19,7 +20,6 @@ import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Rotate;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotDamaged;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKilled;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
@@ -31,7 +31,6 @@ import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -359,8 +358,9 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Insert a new key/value in the bots map
         BotDatas.bots.put("Hunter-" + String.valueOf(this.idBot), this);
 
-        Location spawn = new Location(2028.45, 167.16);
-        return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn);
+        Location spawn = new Location(1326.04, -567.77);
+        Rotation rotation = new Rotation(0, 64300, 0);
+        return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn).setRotation(rotation);
     }
 
     /**

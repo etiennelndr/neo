@@ -7,6 +7,7 @@
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
 import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
+<<<<<<< HEAD
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import java.util.Collection;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Random;
 
 
+=======
+>>>>>>> dc17a05f83e4375fb370ff7a1a4b14213dda3e06
 
 /**
  * 

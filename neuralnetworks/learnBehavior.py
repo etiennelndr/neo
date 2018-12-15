@@ -231,13 +231,14 @@ class MLPLearningExperiment(LearningExperiment):
         X2 = np.zeros([number, number])
         Y1 = np.zeros([number, number])
         Y2 = np.zeros([number, number])
+        Y3 = np.zeros([number, number])
 
         for i in range(number):
             for j in range(number):
                 X1[i,j], X2[i,j] = X[j,0], X[i,1]
                 x = np.array([[ X1[i,j], X2[i,j]]])
                 y = self.model.predict(x)[0]
-                Y1[i,j], Y2[i,j] = y[0], y[1]
+                Y1[i,j], Y2[i,j], Y3[i,j] = y[0], y[1], y[2]
 
         # Plot Y1 <- (X1, X2)
         fig = plt.figure()
@@ -262,6 +263,19 @@ class MLPLearningExperiment(LearningExperiment):
         ax.set_zlabel(yLabels[1])
         ax.plot_surface(X1, X2, Y2, cmap = plt.get_cmap('viridis'))
         plotName = self.learningData.X.names[0] + "_x_" + self.learningData.X.names[1] + "-" + self.learningData.Y.names[1]
+        figFileName = self.defineModelFileBaseName() + "_" + plotName + ".png"
+        plt.savefig(figFileName)
+
+        # Plot Y3 <- (X1, X2)
+        fig = plt.figure()
+        ax = Axes3D(fig)
+        xLabels = self.learningData.X.axisLabels()
+        ax.set_xlabel(xLabels[0])
+        ax.set_ylabel(xLabels[1])
+        yLabels = self.learningData.Y.axisLabels()
+        ax.set_zlabel(yLabels[2])
+        ax.plot_surface(X1, X2, Y3, cmap = plt.get_cmap('viridis'))
+        plotName = self.learningData.X.names[0] + "_x_" + self.learningData.X.names[1] + "-" + self.learningData.Y.names[2]
         figFileName = self.defineModelFileBaseName() + "_" + plotName + ".png"
         plt.savefig(figFileName)
 
@@ -372,14 +386,14 @@ def learn(experiment, analyser):
     return
 
 if __name__ == "__main__":
-
     # Data
     # used to define the dimensions of the data (X,Y)
     #MJ : input ??? values,
     #data = LearningData(2, 4)
-    data = LearningData(2, 2)
+    #data = LearningData(3, 2)
+    data = LearningData(2, 3)
 
-    # Where to read and write the different files
+    # Where to read and write the different file
     if len(sys.argv) > 0:
         learningDataDir = sys.argv[1]
     else:
@@ -404,14 +418,14 @@ if __name__ == "__main__":
 
     experimentParameters.learningData = data
 
-    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid'] # TODO set this value
+    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid'] # TODO set this value
     experimentParameters.outputLayerActivationFunction = 'tanh' # TODO set this value
     experimentParameters.lossFunction = 'mse'
     #experimentParameters.lossFunction = 'categorical_crossentropy'
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
-    experimentParameters.layers = np.array([2,8,4]) # TODO define here the configuration of the network
+    experimentParameters.layers = np.array([12,37,61,43,37,14]) # TODO define here the configuration of the network
     experimentParameters.nMaxEpochs = 1000 # TODO set this value
 
     LearningExperiment.verbose = 1

@@ -29,16 +29,23 @@ class Server():
         self.__mutex          = Lock()
 
         # Uncomment for partial map
-        self.__maxX, self.__minX   = 2179.21, 1823.39
-        self.__maxY, self.__minY   = 585.48, -2458.07
-        self.__maxVx, self.__minVx = 439.92, -439.99
-        self.__maxVy, self.__minVy = 440.0, -449.52
+        # Inputs
+        #self.__maxX, self.__minX     = 2179.21, 1823.39
+        #self.__maxY, self.__minY     = 585.48, -2458.07
+        #self.__maxYaw, self.__minYaw = 65535.0, 0.0
+        # Outputs
+        #self.__maxVx, self.__minVx   = 439.92, -439.99
+        #self.__maxVy, self.__minVy   = 440.0, -449.52
 
         # Uncomment for complete map
-        #self.__maxX, self.__minX   = 3092.38, 912.6
-        #self.__maxY, self.__minY   = 582.08, -2511.44
-        #self.__maxVx, self.__minVx = 449.94, -705.87
-        #self.__maxVy, self.__minVy = 449.57, 462.2
+        # Inputs
+        self.__maxX, self.__minX     = 3038.19, 928.88
+        self.__maxY, self.__minY     = 543.43, -2562.1
+        #self.__maxYaw, self.__minYaw = 65535.0, 0.0
+        # Outputs
+        self.__maxVx, self.__minVx   = 790.65, -440.0
+        self.__maxVy, self.__minVy   = 759.32, -779.81
+        self.__maxVz, self.__minVz   = 328.52, -500.23
 
     # This method is the main method of the class Server
     def run(self):
@@ -109,6 +116,8 @@ class Server():
                                 + bytes(str(result[0]),"utf-8")
                                 + bytes(" ", "utf-8")
                                 + bytes(str(result[1]),"utf-8")
+                                + bytes(" ", "utf-8")
+                                + bytes(str(result[2]),"utf-8")
                                 + bytes("]", "utf-8")
                                 + bytes("\n", "utf-8")) # MUST NOT forget end of line
             except socket.error as error:
@@ -120,24 +129,27 @@ class Server():
         
     def __processData(self, data):
         result = self.__behaviorController.process(data)
-        vx, vy = self.__transformOutputDatas(result[0], result[1])
-        print(str(data) + ' --> ' + str(vx) + ', ' + str(vy))
-        return [vx, vy]
+        vx, vy, vz = self.__transformOutputDatas(result[0], result[1], result[2])
+        print(str(data) + ' --> ' + str(vx) + ', ' + str(vy)+ ', ' + str(vz))
+        return [vx, vy, vz]
     
     def __splitData(self, data):
+        print(data)
+
         data = data.decode("utf-8")
         d = data.split("[")[1].split(']')[0]
         splitValues = d.split(" ")
 
         # Normalize input datas
-        x, y = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1]))
+        #x, y, yaw = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1]), float(splitValues[2]))
+        x, y = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1])) #, float(splitValues[2]))
 
-        values = [x, y]
+        values = [x, y] #, yaw]
         datas = np.array([values])
 
         return datas
 
-    def __normalizeInputDatas(self, x, y):
+    def __normalizeInputDatas(self, x, y): #, yaw):
         if x > self.__maxX:
             x = self.__maxX
         elif x < self.__minX:
@@ -150,12 +162,19 @@ class Server():
             y = self.__minY
         ny = (y - self.__minY) / (self.__maxY - self.__minY)
 
-        return nx, ny
+        #if yaw > self.__maxYaw:
+        #    yaw = self.__maxYaw
+        #elif yaw < self.__minYaw:
+        #    yaw = self.__minYaw
+        #nyaw = (yaw - self.__minYaw) / (self.__maxYaw - self.__minYaw)
 
-    def __transformOutputDatas(self, vx, vy):
+        return nx, ny #, nyaw
+
+    def __transformOutputDatas(self, vx, vy, vz):
         tvx = ((vx + 1)/2)*(self.__maxVx - self.__minVx) + self.__minVx
         tvy = ((vy + 1)/2)*(self.__maxVy - self.__minVy) + self.__minVy
-        return tvx, tvy
+        tvz = ((vz + 1)/2)*(self.__maxVz - self.__minVz) + self.__minVz
+        return tvx, tvy, tvz
 
     def __close(self):
         # Close the main socket

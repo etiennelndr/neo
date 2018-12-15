@@ -5,9 +5,12 @@
  * Window - Preferences - Java - Code Style - Code Templates
  */
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
+<<<<<<< HEAD
      
 import com.etiennelndr.projetias.bot_pogamut.reinforcement.Perception;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
+=======
+>>>>>>> dc17a05f83e4375fb370ff7a1a4b14213dda3e06
 
 /**
  * @author deloor
