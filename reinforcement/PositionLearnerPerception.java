@@ -7,6 +7,7 @@
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
 
 
+import com.etiennelndr.projetias.bot_pogamut.BotProjetIAS;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
 import java.awt.Point;
 //import maze.*;
@@ -38,9 +39,11 @@ public class PositionLearnerPerception extends Perception {
             return plp;
         }
 	
-	public void updatePerception(){
+	public void updatePerception(BotProjetIAS bot){
+            
+		//_weapon = getAgent().getWeapon();
+               _weapon = bot.getWeaponry().getCurrentWeapon();
                 
-		_weapon = getAgent().getWeapon();
 	}
 	public boolean equals(Perception s){
 		//return(((PositionLearnerPerception)(s))._position.getX()==_position.getX()&&(((PositionLearnerPerception)(s))._position.getY()==_position.getY()));

@@ -5,12 +5,9 @@
  * Window - Preferences - Java - Code Style - Code Templates
  */
 package com.etiennelndr.projetias.bot_pogamut.reinforcement;
-<<<<<<< HEAD
-     
+
 import com.etiennelndr.projetias.bot_pogamut.reinforcement.Perception;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Weapon;
-=======
->>>>>>> dc17a05f83e4375fb370ff7a1a4b14213dda3e06
 
 /**
  * @author deloor
@@ -26,7 +23,7 @@ public class MemoryPattern {
 	private Perception _perception;
 	private Weapon _action;
 	private float _qualitie;
-	
+
 	public MemoryPattern(Perception state, float qualitie, Weapon action){
             //System.out.println("Construction d'un memory Pattern avec une Perception de type " + state.getClass().getName());
 	   /* Class<?> classPerception = null;
@@ -40,19 +37,18 @@ public class MemoryPattern {
                 } catch (IllegalAccessException ex) {
                     ex.printStackTrace();
                 } catch (InstantiationException ex) {
-            
+
                 }*/
-               
-            
+
+
                 _perception=state.copy();
 		_qualitie=qualitie;
-		_action = action;	
+		_action = action;
 	}
-	
+
 	public Perception getPerception(){return _perception;}
 	public float getQualitie(){return _qualitie;}
 	public Weapon getAction(){return _action;}
 	public void setQualitie(float q){_qualitie=q;}
-	
+
 }
- 
