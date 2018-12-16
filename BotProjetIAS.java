@@ -406,21 +406,17 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Transition
         currentState = currentState.transition(this);
 
-        //renforcement
-         agent.sarsaAlgorithmeStep(this,currentState.STATE);
+        // Renforcement
+        //agent.sarsaAlgorithmeStep(this,currentState.STATE);
       
         // Act
         currentState.act(this);
         
-        //renforcement
-        agent.learn(this.getWeaponry().getCurrentWeapon().getType());
+        // Renforcement
+        //agent.learn(this.getWeaponry().getCurrentWeapon().getType());
 
         // Lock the code
         locker.lock();
-
-        // Store values into database
-        //currentState.insertStateValuesIntoDatabase(this);
-        //this.clientTCP.sendMessage("[" + bot.getLocation().x + " " + bot.getLocation().y + "]");
 
         // Update map
         BotDatas.bots.replace(this.getName().toString().split(" ")[0], this);
@@ -445,11 +441,6 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
 
     ///////////////////////////////////
     public static void main(String args[]) throws PogamutException {
-        // Open the connection with the database
-        //BotProjetIAS.db = new Database();
-        // Reset the database
-        //BotProjetIAS.db.resetDatabase();
-
         // Instantiate the map
         BotDatas.bots = new HashMap<String, BotProjetIAS>();
 
