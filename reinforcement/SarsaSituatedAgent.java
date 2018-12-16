@@ -239,25 +239,24 @@ public class SarsaSituatedAgent extends SituatedAgent {
     }
     
     public void chooseAPAction(BotProjetIAS bot){
-    //Exploration ou exploitation with ratio ; bug for now
-
-    bot.getBot().getBotName().setInfo(_perceptionClass);
-    double ratio = 0.3; 
-    if(bot.getStats().getDeaths()>=1) {
-       ratio = (double)(bot.getStats().getKilledOthers())/(double)(bot.getStats().getDeaths()); 
+        // Exploration ou exploitation with ratio ; bug for now
+        bot.getBot().getBotName().setInfo(_perceptionClass);
+        double ratio = 0.3; 
+        if(bot.getStats().getDeaths()>=1) {
+            ratio = (double)(bot.getStats().getKilledOthers())/(double)(bot.getStats().getDeaths()); 
         }
-    //System.out.println("RATIO IS " + ratio);
-     bot.getBot().getBotName().setInfo("MY RATIO IS " + ratio);
-    // bot.getBot().("ratio is " + choose);
-    chooseAPActionRandomly(bot);
+        //System.out.println("RATIO IS " + ratio);
+        bot.getBot().getBotName().setInfo("MY RATIO IS " + ratio);
+        // bot.getBot().("ratio is " + choose);
+        chooseAPActionRandomly(bot);
    	if(ratio<2){                     // for upgrade; for now 
-    		chooseAPActionRandomly(bot);
-    		} //exploration
-//    	
+            chooseAPActionRandomly(bot);
+    	} //exploration
+        //    	
     	else {
-    		chooseAPGreedyAction();
+            chooseAPGreedyAction();
 //    		} //exploitation ;		
-            }
+        }
     }
        
     
