@@ -107,7 +107,7 @@ public class SarsaSituatedAgent extends SituatedAgent {
 
 
 
-        public void oneStep(BotProjetIAS bot) {
+        public void oneStep(BotProjetIAS bot) { //useless
             sarsaAlgorithmeStep(bot);
         }
          
@@ -282,7 +282,7 @@ public class SarsaSituatedAgent extends SituatedAgent {
     	runAction(bot);
     	chooseAPAction(bot);
 	learn(); 
-        System.out.println("Not bug 4");
+   //     System.out.println("Not bug 4");
     }
     
     private void printSarsaState(){
@@ -323,39 +323,47 @@ public class SarsaSituatedAgent extends SituatedAgent {
     	//Exploration ou exploitation with ratio ; bug for now
  
     	double choose = 0.3; 
-        passageBoucle++;
-//         System.out.println("passageBoucle " + passageBoucle);
+//       passageBoucle++;
+//      System.out.println("passageBoucle " + passageBoucle);
 //        if(passageBoucle>20) {
 // //       choose = bot.getStats().getDeaths(); //bug
 //        }
         
-        System.out.println("RATIO IS " + choose);
+//        System.out.println("RATIO IS " + choose);
         chooseAPActionRandomly(bot);
-    	if(passageBoucle<250){
-    		chooseAPActionRandomly(bot);
-    		} //exploration
-    	
-    	else {
-    	//	chooseAPGreedyAction();
-    		} //exploitation ;	;	
+//    	if(choose<0.4){                     // for upgrade; for now 
+//    		chooseAPActionRandomly(bot);
+//    		} //exploration
+//    	
+//    	else {
+//    		chooseAPGreedyAction();
+//    		} //exploitation ;	;	
     }
     
     public void chooseAPActionRandomly(BotProjetIAS bot){
+         Weapon armeSelected ;
+        // eviter les bug de changement d'amre 
+        if(!bot.getInfo().isShooting())
+        {
         // recupere une arme charge aléatoirement ; works
         Map<ItemType, Weapon> loadedWeapons = bot.getWeaponry().getLoadedWeapons();
         //Object[] weaponsArray = loadedWeapons.keySet().toArray();
-        int n = (new Random().nextInt(loadedWeapons.size()));
+        int n = (new Random().nextInt(loadedWeapons.size()))+1; 
+        System.out.println("n is :" + n);
         // choix d'une arme au hasard
-       
+        if(n==1){
+            n=2; 
+        }
         Collection<Weapon> collectionWeapons = loadedWeapons.values();
         Iterator<Weapon> itWeapon = collectionWeapons.iterator();
-        Weapon armeSelected = bot.getWeaponry().getCurrentWeapon();
+         armeSelected = bot.getWeaponry().getCurrentWeapon();
         for(int i= 0; i<n; i++)
         {
         armeSelected = itWeapon.next();
         }
         bot.getShoot().changeWeapon(armeSelected);    
-        System.out.println(armeSelected.toString()); /// says the name of weapon 
+        System.out.println(armeSelected.toString()); /// says the name of weapon
+        }
     }
     
     public void chooseAPGreedyAction(){             // to change 
@@ -388,14 +396,14 @@ public class SarsaSituatedAgent extends SituatedAgent {
 //                } catch (InstantiationException ex) {
 //            
 //                }
-//                ((Perception)_SP).setAgent((SituatedAgent)this); 
-//                ((Perception)_SP).updatePerception();
+//              ((Perception)_SP).setAgent((SituatedAgent)this); 
+//              ((Perception)_SP).updatePerception();
 //   
-//    	if(!(existeAMemorieWith(_SP)))
+//   	if((existeAMemorieWith(_SP)))
 //    	{   
-//    		createNewMemoryWith(_SP);
+//   		createNewMemoryWith(_SP);
 //    	}	
-    }
+//  }
     
     
     //public String getName(){return _name;}
@@ -403,3 +411,4 @@ public class SarsaSituatedAgent extends SituatedAgent {
     //public void setUnSelected(){ selected = false;}
     //public boolean isSelected(){return selected;}
 }
+}   

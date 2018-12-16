@@ -1,6 +1,7 @@
 package com.etiennelndr.projetias.bot_pogamut;
 
 import com.etiennelndr.projetias.bot_pogamut.database.Database;
+import com.etiennelndr.projetias.bot_pogamut.reinforcement.SarsaSituatedAgent;
 import com.etiennelndr.projetias.bot_pogamut.states.State;
 
 import java.util.List;
@@ -46,6 +47,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @AgentScoped
 public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
+    
+    //renforcement
+    SarsaSituatedAgent agent =  new SarsaSituatedAgent("perception.PositionLearnerPerception");   
 
     static String addressTCP = "localhost";
     static int portTCP       = 12400;
@@ -292,8 +296,8 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
      */
     @Override
     public void prepareBot(UT2004Bot bot) {
-        tabooItems = new TabooSet<Item>(bot);
 
+        tabooItems = new TabooSet<Item>(bot);
         autoFixer = new UT2004PathAutoFixer(bot, navigation.getPathExecutor(), fwMap, aStar, navBuilder); // auto-removes wrong navigation links between navpoints
 
         // listeners
@@ -357,9 +361,11 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
 
         // Insert a new key/value in the bots map
         BotDatas.bots.put("Hunter-" + String.valueOf(this.idBot), this);
-
+        
         Location spawn = new Location(1326.04, -567.77);
         Rotation rotation = new Rotation(0, 64300, 0);
+        
+        
         return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn).setRotation(rotation);
     }
 
@@ -376,13 +382,13 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
 
     @EventListener(eventClass=PlayerDamaged.class)
     public void playerDamaged(PlayerDamaged event) {
-    	log.info("I have just hurt other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
+    //	log.info("I have just hurt other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
 
     @EventListener(eventClass=BotDamaged.class)
     public void botDamaged(BotDamaged event) {
         this.beingDamaged = true;
-    	log.info("I have just been hurt by other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
+    	//log.info("I have just been hurt by other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
 
     /**
@@ -395,11 +401,18 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     @Override
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void logic() {
+        //renforcement
+        agent.sarsaAlgorithmeStep(this); // debug 
+
         // Transition
         currentState = currentState.transition(this);
-
+      
         // Act
         currentState.act(this);
+      
+        //renforcement
+     
+        
 
         // Lock the code
         locker.lock();
@@ -414,19 +427,6 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         // Unlock the code
         locker.unlock();
     }
-
-    ///////////////
-    // STATE HIT //
-    ///////////////
-    //protected void stateHit() {
-        //log.info("Decision is: HIT");
-//        bot.getBotName().setInfo("HIT");
-//        if (navigation.isNavigating()) {
-//        	navigation.stopNavigation();
-//        	item = null;
-//        }
-//        getAct().act(new Rotate().setAmount(32000));
-//    //}
 
     ////////////////////////////
     // STATE RUN AROUND ITEMS //
