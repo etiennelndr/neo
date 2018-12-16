@@ -32,7 +32,7 @@ public class PositionLearnerPerception extends Perception {
 //		_position = new Point(p._position);
 //		setAgent(p.getAgent());
 //	}
-        
+//        
         public PositionLearnerPerception copy(){
             PositionLearnerPerception plp = new PositionLearnerPerception();
             plp.setAgent(getAgent());
@@ -42,7 +42,7 @@ public class PositionLearnerPerception extends Perception {
 	public void updatePerception(BotProjetIAS bot){
             
 		//_weapon = getAgent().getWeapon();
-               _weapon = bot.getWeaponry().getCurrentWeapon();
+              // _weapon = bot.getWeaponry().getCurrentWeapon();
                 
 	}
 	public boolean equals(Perception s){

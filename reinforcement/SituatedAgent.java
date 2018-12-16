@@ -60,7 +60,7 @@ public class SituatedAgent {
 
 	public void runAction(BotProjetIAS bot){
         //        bot.getShoot().changeWeapon(_weapons);
-		_myPerception.updatePerception(bot);
+	//	_myPerception.updatePerception(bot);
 	}
 
 }

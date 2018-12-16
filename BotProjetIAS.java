@@ -367,6 +367,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         
         return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn).setRotation(rotation);
+        
     }
 
     /**
@@ -404,12 +405,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
       
         // Transition
         currentState = currentState.transition(this);
-        
+
         //renforcement
          agent.sarsaAlgorithmeStep(this,currentState.STATE);
       
         // Act
         currentState.act(this);
+        
+        //renforcement
+        agent.learn(this.getWeaponry().getCurrentWeapon().getType());
 
         // Lock the code
         locker.lock();

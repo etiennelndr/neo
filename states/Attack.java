@@ -84,7 +84,7 @@ public class Attack extends State {
             // Pick a new enemy
             bot.setEnemy(bot.getPlayers().getNearestVisiblePlayer(bot.getPlayers().getVisibleEnemies().values()));
             if (bot.getEnemy() == null) {
-                bot.getLog().info("Can't see any enemies... ???");
+             //   bot.getLog().info("Can't see any enemies... ???");
                 return;
             }
         }
@@ -100,7 +100,7 @@ public class Attack extends State {
             // Or shoot on enemy if it is visible
             distance = bot.getInfo().getLocation().getDistance(bot.getEnemy().getLocation());
             if (bot.getShoot().shoot(bot.getWeaponPrefs(), bot.getEnemy()) != null) {
-                bot.getLog().info("Shooting at bot.getEnemy()!!!");
+            //   bot.getLog().info("Shooting at bot.getEnemy()!!!");
                 this.shooting = true;
             }
         }

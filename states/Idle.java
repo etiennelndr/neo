@@ -82,7 +82,7 @@ public class Idle extends State {
             String request = "[" + String.valueOf(bot.getBot().getLocation().x) 
                     + " " + String.valueOf(bot.getBot().getLocation().y)
                     + " " + String.valueOf(bot.getBot().getRotation().yaw) + "]";
-            System.out.println(request);
+            //System.out.println(request);
             String response = bot.getClientTCP().sendMessage(request);
             
             String respSplit = response.split("\\[")[1].split("\\]")[0];
@@ -98,7 +98,7 @@ public class Idle extends State {
             if (Float.parseFloat(values[2]) > 150)
                 bot.getBody().getLocomotion().jump();
             
-            System.out.println(respSplit);
+            //System.out.println(respSplit);
             /*bot.getLog().warning("NO ITEM TO RUN FOR!");
             if (bot.getNavigation().isNavigating())
                 return;
@@ -115,7 +115,7 @@ public class Idle extends State {
             String request = "[" + String.valueOf(bot.getBot().getLocation().x) 
                     + " " + String.valueOf(bot.getBot().getLocation().y) 
                     + " " + String.valueOf(bot.getBot().getRotation().yaw) + "]";
-            System.out.println(request);
+            //System.out.println(request);
             String response = bot.getClientTCP().sendMessage(request);
             
             String respSplit = response.split("\\[")[1].split("\\]")[0];
@@ -131,7 +131,7 @@ public class Idle extends State {
             if (Float.parseFloat(values[2]) > 150)
                 bot.getBody().getLocomotion().jump();
             
-            System.out.println(respSplit);
+            //System.out.println(respSplit);
             /*bot.setItem(item);
             bot.getLog().info("RUNNING FOR: " + item.getType().getName());
             bot.getBot().getBotName().setInfo("ITEM: " + item.getType().getName() + "");
