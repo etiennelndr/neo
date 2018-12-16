@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-import sun.util.logging.resources.logging;
 
 /**
  * @author deloor
@@ -107,9 +106,9 @@ public class SarsaSituatedAgent extends SituatedAgent {
 
 
 
-        public void oneStep(BotProjetIAS bot) { //useless
-            sarsaAlgorithmeStep(bot);
-        }
+//        public void oneStep(BotProjetIAS bot) { //useless
+//            sarsaAlgorithmeStep(bot);
+//        }
          
         
        
@@ -277,12 +276,13 @@ public class SarsaSituatedAgent extends SituatedAgent {
 //       System.out.println(" done_learn");
     }
     
-    public void sarsaAlgorithmeStep(BotProjetIAS bot){
-
+    public void sarsaAlgorithmeStep(BotProjetIAS bot, String state){
+        if (state.equals("ATTACK"))         // avoid random change during idle
+        {
     	runAction(bot);
     	chooseAPAction(bot);
 	learn(); 
-   //     System.out.println("Not bug 4");
+        }
     }
     
     private void printSarsaState(){
@@ -320,49 +320,50 @@ public class SarsaSituatedAgent extends SituatedAgent {
     }
     
     public void chooseAPAction(BotProjetIAS bot){
-    	//Exploration ou exploitation with ratio ; bug for now
- 
-    	double choose = 0.3; 
-//       passageBoucle++;
-//      System.out.println("passageBoucle " + passageBoucle);
-//        if(passageBoucle>20) {
-// //       choose = bot.getStats().getDeaths(); //bug
-//        }
-        
-//        System.out.println("RATIO IS " + choose);
-        chooseAPActionRandomly(bot);
-//    	if(choose<0.4){                     // for upgrade; for now 
-//    		chooseAPActionRandomly(bot);
-//    		} //exploration
+    //Exploration ou exploitation with ratio ; bug for now
+
+    bot.getBot().getBotName().setInfo(_perceptionClass);
+    double ratio = 0.3; 
+    if(bot.getStats().getDeaths()>=1) {
+       ratio = (double)(bot.getStats().getKilledOthers())/(double)(bot.getStats().getDeaths()); 
+        }
+    //System.out.println("RATIO IS " + ratio);
+     bot.getBot().getBotName().setInfo("MY RATIO IS " + ratio);
+    // bot.getBot().("ratio is " + choose);
+    chooseAPActionRandomly(bot);
+   	if(ratio<2){                     // for upgrade; for now 
+    		chooseAPActionRandomly(bot);
+    		} //exploration
 //    	
-//    	else {
-//    		chooseAPGreedyAction();
+    	else {
+    		chooseAPGreedyAction();
 //    		} //exploitation ;	;	
+            }
     }
+       
     
     public void chooseAPActionRandomly(BotProjetIAS bot){
          Weapon armeSelected ;
         // eviter les bug de changement d'amre 
         if(!bot.getInfo().isShooting())
         {
-        // recupere une arme charge aléatoirement ; works
-        Map<ItemType, Weapon> loadedWeapons = bot.getWeaponry().getLoadedWeapons();
-        //Object[] weaponsArray = loadedWeapons.keySet().toArray();
-        int n = (new Random().nextInt(loadedWeapons.size()))+1; 
-        System.out.println("n is :" + n);
-        // choix d'une arme au hasard
-        if(n==1){
-            n=2; 
-        }
-        Collection<Weapon> collectionWeapons = loadedWeapons.values();
-        Iterator<Weapon> itWeapon = collectionWeapons.iterator();
-         armeSelected = bot.getWeaponry().getCurrentWeapon();
-        for(int i= 0; i<n; i++)
-        {
-        armeSelected = itWeapon.next();
-        }
-        bot.getShoot().changeWeapon(armeSelected);    
-        System.out.println(armeSelected.toString()); /// says the name of weapon
+            // recupere une arme charge aléatoirement ; works
+            Map<ItemType, Weapon> loadedWeapons = bot.getWeaponry().getLoadedWeapons();
+            int n = (new Random().nextInt(loadedWeapons.size()))+1; 
+            //System.out.println("n is :" + n);
+            // choix d'une arme au hasard
+            if(n==1){
+                n=2; 
+            }
+            Collection<Weapon> collectionWeapons = loadedWeapons.values();
+            Iterator<Weapon> itWeapon = collectionWeapons.iterator();
+             armeSelected = bot.getWeaponry().getCurrentWeapon();
+            for(int i= 0; i<n; i++)
+            {
+            armeSelected = itWeapon.next();
+            }
+            bot.getShoot().changeWeapon(armeSelected);    
+        //    System.out.println(armeSelected.toString()); /// says the name of weapon
         }
     }
     

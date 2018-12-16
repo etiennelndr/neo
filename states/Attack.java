@@ -119,24 +119,5 @@ public class Attack extends State {
         
         bot.setItem(null);
     }
-    public void changerArme(BotProjetIAS bot) {
-//        // recupere une arme charge aléatoirement
-//        Map<ItemType, Weapon> loadedWeapons = bot.getWeaponry().getLoadedWeapons();
-//        //Object[] weaponsArray = loadedWeapons.keySet().toArray();
-//        int n = (new Random().nextInt(loadedWeapons.size()));
-//        // choix d'une arme au hasard
-//        
-//        Collection<Weapon> collectionWeapons = loadedWeapons.values();
-//        Iterator<Weapon> itWeapon = collectionWeapons.iterator();
-//        Weapon armeSelected = bot.getWeaponry().getCurrentWeapon();
-//        for(int i= 0; i<n; i++)
-//        {
-//        armeSelected = itWeapon.next();
-//        }
-//        bot.getShoot().changeWeapon(armeSelected);    
-//        }
-//        // copy to SituatedAgent
-        
 
-}
 }

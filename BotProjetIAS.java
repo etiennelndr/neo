@@ -401,18 +401,15 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     @Override
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void logic() {
-        //renforcement
-        agent.sarsaAlgorithmeStep(this); // debug 
-
+      
         // Transition
         currentState = currentState.transition(this);
+        
+        //renforcement
+         agent.sarsaAlgorithmeStep(this,currentState.STATE);
       
         // Act
         currentState.act(this);
-      
-        //renforcement
-     
-        
 
         // Lock the code
         locker.lock();
@@ -438,6 +435,7 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     ////////////////
     @Override
     public void botKilled(BotKilled event) {
+        // réduire récompense renforcement bot 
         this.dead = true;
     }
 
