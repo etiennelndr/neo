@@ -98,15 +98,12 @@ class MLPLearningExperiment(LearningExperiment):
             print("\t - optimizer : " + self.optimizer)
             print("\t - loss function : " + self.lossFunction)
 
-        #sgd = optimizers.SGD(lr=0.0001, decay=0.0, momentum=0.9, nesterov=False)
-
         self.model.compile(optimizer = self.optimizer,
             loss = self.lossFunction,
             metrics = ['accuracy'])
         return
 
     def learn(self, cbks):
-
         history = self.model.fit(self.learningData.X.trainValues, self.learningData.Y.trainValues,
             batch_size = self.batchSize,
             epochs = self.nMaxEpochs,
@@ -389,8 +386,6 @@ if __name__ == "__main__":
     # Data
     # used to define the dimensions of the data (X,Y)
     #MJ : input ??? values,
-    #data = LearningData(2, 4)
-    #data = LearningData(3, 2)
     data = LearningData(2, 3)
 
     # Where to read and write the different file
@@ -418,15 +413,14 @@ if __name__ == "__main__":
 
     experimentParameters.learningData = data
 
-    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid'] # TODO set this value
-    experimentParameters.outputLayerActivationFunction = 'tanh' # TODO set this value
+    experimentParameters.hiddenLayersActivationFunctions = ['sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid', 'sigmoid']
+    experimentParameters.outputLayerActivationFunction = 'tanh'
     experimentParameters.lossFunction = 'mse'
-    #experimentParameters.lossFunction = 'categorical_crossentropy'
     experimentParameters.optimizer = 'adam'
 
     # Layers to DEFINE for better result
-    experimentParameters.layers = np.array([12,37,61,43,37,14]) # TODO define here the configuration of the network
-    experimentParameters.nMaxEpochs = 1000 # TODO set this value
+    experimentParameters.layers = np.array([12,37,61,43,37,14])
+    experimentParameters.nMaxEpochs = 1000
 
     LearningExperiment.verbose = 1
 

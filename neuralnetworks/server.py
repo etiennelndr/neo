@@ -28,20 +28,10 @@ class Server():
         self.__state          = ""
         self.__mutex          = Lock()
 
-        # Uncomment for partial map
-        # Inputs
-        #self.__maxX, self.__minX     = 2179.21, 1823.39
-        #self.__maxY, self.__minY     = 585.48, -2458.07
-        #self.__maxYaw, self.__minYaw = 65535.0, 0.0
-        # Outputs
-        #self.__maxVx, self.__minVx   = 439.92, -439.99
-        #self.__maxVy, self.__minVy   = 440.0, -449.52
-
         # Uncomment for complete map
         # Inputs
         self.__maxX, self.__minX     = 3038.19, 928.88
         self.__maxY, self.__minY     = 543.43, -2562.1
-        #self.__maxYaw, self.__minYaw = 65535.0, 0.0
         # Outputs
         self.__maxVx, self.__minVx   = 790.65, -440.0
         self.__maxVy, self.__minVy   = 759.32, -779.81
@@ -141,15 +131,14 @@ class Server():
         splitValues = d.split(" ")
 
         # Normalize input datas
-        #x, y, yaw = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1]), float(splitValues[2]))
-        x, y = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1])) #, float(splitValues[2]))
+        x, y = self.__normalizeInputDatas(float(splitValues[0]), float(splitValues[1]))
 
-        values = [x, y] #, yaw]
+        values = [x, y]
         datas = np.array([values])
 
         return datas
 
-    def __normalizeInputDatas(self, x, y): #, yaw):
+    def __normalizeInputDatas(self, x, y):
         if x > self.__maxX:
             x = self.__maxX
         elif x < self.__minX:
@@ -162,13 +151,7 @@ class Server():
             y = self.__minY
         ny = (y - self.__minY) / (self.__maxY - self.__minY)
 
-        #if yaw > self.__maxYaw:
-        #    yaw = self.__maxYaw
-        #elif yaw < self.__minYaw:
-        #    yaw = self.__minYaw
-        #nyaw = (yaw - self.__minYaw) / (self.__maxYaw - self.__minYaw)
-
-        return nx, ny #, nyaw
+        return nx, ny
 
     def __transformOutputDatas(self, vx, vy, vz):
         tvx = ((vx + 1)/2)*(self.__maxVx - self.__minVx) + self.__minVx

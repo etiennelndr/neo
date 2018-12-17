@@ -108,9 +108,7 @@ public class Attack extends State {
             }
         }
         
-        // If our enemy is too far and visible -> run to him
-        int decentDistance = Math.round(bot.getRandom().nextFloat() * 800) + 200;
-        if (decentDistance < distance && bot.getEnemy().isVisible()) {
+        if (this.decentDistance < distance && bot.getEnemy().isVisible()) {
             if (!this.runningToPlayer) {
                 bot.getNavigation().navigate(bot.getEnemy());
                 this.runningToPlayer = true;
