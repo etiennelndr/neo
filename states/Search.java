@@ -29,6 +29,8 @@ public class Search extends State {
     
     private final int MAX_PURSUE_COUNT = 30;
     
+    private final long decentDistance;
+    
     /**
      * Constructor for Search class
      */
@@ -38,6 +40,8 @@ public class Search extends State {
         
         // Set pursueCount to 0
         this.pursueCount = 0;
+        
+        this.decentDistance = Math.round(Math.random() * 600) + 600;
     }
 
     @Override
@@ -57,7 +61,6 @@ public class Search extends State {
         }
         
         // If our enemy is not too far
-        int decentDistance = Math.round(bot.getRandom().nextFloat() * 600) + 400;
         double distance = bot.getInfo().getLocation().getDistance(bot.getEnemy().getLocation());
         if (bot.getEnemy().isVisible() && distance < decentDistance)
             return new Attack();

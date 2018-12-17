@@ -44,7 +44,7 @@ public class Attack extends State {
         // Change the title to ATTACK
         super("ATTACK");
         
-        this.decentDistance = Math.round(Math.random() * 600) + 400;
+        this.decentDistance = Math.round(Math.random() * 600) + 600;
     }
 
     @Override

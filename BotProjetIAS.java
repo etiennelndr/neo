@@ -389,7 +389,8 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     @EventListener(eventClass=BotDamaged.class)
     public void botDamaged(BotDamaged event) {
         // Face the enemy
-        body.getLocomotion().turnTo(getPlayers().getPlayer(event.getInstigator()));
+        if (event.getInstigator() != null)
+            body.getLocomotion().turnTo(players.getPlayer(event.getInstigator()));
         this.beingDamaged = true;
     	//log.info("I have just been hurt by other bot for: " + event.getDamageType() + "[" + event.getDamage() + "]");
     }
@@ -404,7 +405,6 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
     @Override
     @SuppressWarnings("LockAcquiredButNotSafelyReleased")
     public void logic() {
-      
         // Transition
         currentState = currentState.transition(this);
 

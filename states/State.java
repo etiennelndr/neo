@@ -102,6 +102,6 @@ public abstract class State {
      * @param bot 
      */
     protected void changeStateName(BotProjetIAS bot) {
-        //bot.getBot().getBotName().setInfo(STATE);
+        bot.getBot().getBotName().setInfo(STATE);
     }
 }
