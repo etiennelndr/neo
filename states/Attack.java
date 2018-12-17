@@ -36,11 +36,15 @@ public class Attack extends State {
     
     private boolean runningToPlayer = false;
     
-    private final int MIN_HEALTH = 25;
+    private final int MIN_HEALTH = 15;
+    
+    private final long decentDistance;
     
     public Attack() {
         // Change the title to ATTACK
         super("ATTACK");
+        
+        this.decentDistance = Math.round(Math.random() * 600) + 400;
     }
 
     @Override
@@ -62,7 +66,6 @@ public class Attack extends State {
         }
         
         // If our enemy is far or not visible - run to him
-        int decentDistance = Math.round(bot.getRandom().nextFloat() * 600) + 400;
         if (!bot.getEnemy().isVisible()
                 || !shooting
                 || decentDistance < distance)
