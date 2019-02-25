@@ -37,8 +37,11 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
+import javax.vecmath.Vector3d;
 
 /**
  *
@@ -367,7 +370,6 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
         
         
         return new Initialize().setName("Hunter-" + (this.idBot)).setDesiredSkill(5).setLocation(spawn).setRotation(rotation);
-        
     }
 
     /**
@@ -413,6 +415,14 @@ public class BotProjetIAS extends UT2004BotModuleController<UT2004Bot> {
       
         // Act
         currentState.act(this);
+        
+        try {
+            this.raycasting.createRay(new Vector3d(), 150, false, false, false).get().getHitLocation();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BotProjetIAS.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(BotProjetIAS.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         // Renforcement
         //agent.learn(this.getWeaponry().getCurrentWeapon().getType());
